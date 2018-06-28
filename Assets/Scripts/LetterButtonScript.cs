@@ -21,14 +21,7 @@ public class LetterButtonScript : MonoBehaviour {
 
 
 	public void OnButtonCLick(){
-		Debug.Log ("hihuhu");
         //call weiter geben
         TaskController.Instance.ButtonGetsClicked(this);
-	}
-
-	public void setLetter(char l){
-		//LetterCharacter.GetComponentInChildren<Text> ().text = l.ToString();
-		//LetterCharacter.transform.gameObject.GetComponentInParent<Text>().text= l.ToString();
-		//LetterCharacter.text = l.ToString();
 	}
 }
