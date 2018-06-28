@@ -10,11 +10,11 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//lower box
     public GameObject StartBox;
 	//button
-    public GameObject LetterPrefab;
+    public GameObject LetterButtonPrefab;
 	//upperbox
     public GameObject TargetBox;
-	//empty upperbox fields
-    public GameObject TargetHolder;
+	//empty holder button prefab
+    public GameObject ButtonHolderPrefab;
 	//list of words to work with
     public List<WordItem> Words;
 
@@ -85,27 +85,26 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//instantiate distractor buttons and add them to the lowerboxlist
         foreach (var distractorStr in useWord.Distractors)
         {
-			//instantiate lower button box
-            var holderGo = Instantiate(TargetHolder, StartBox.transform);
+			//instantiate lower button box ##instantiate button holder in startBox
+            var holderGo = Instantiate(ButtonHolderPrefab, StartBox.transform);
 
-            Debug.Log(distractorStr);
 			//instantiate Button
-            var letterGo = Instantiate(LetterPrefab, StartBox.transform) as GameObject;
+            var letterGo = Instantiate(LetterButtonPrefab, StartBox.transform) as GameObject;
             var letterScript = letterGo.GetComponent<LetterButtonScript>();
-            //set parent of letter to holder 
+            //set gameobject parent of letter to button holder
             letterGo.transform.SetParent(holderGo.transform);
 			//set textvalue of button to distractor char
             letterScript.LetterCharacter.text = distractorStr;
-			//button is in the lower box and is a disctractor
+			//button is in the lower box and is a disctractor ##set it
             letterScript.LowerBox = true;
             letterScript.IsDistractor = true;
 			//add distractor to letterlist
             _letterList.Add(letterGo.GetComponent<LetterButtonScript>());
             //Set button position to occupied in lower box
             holderGo.GetComponent<LetterHolderScript>().IsTaken = true;
-			//?
+			//? ##tell the holderGo (and its script) that he is holding "letterScript" now. This is the button gameobject with the letter in it. So he knows that he is holding the letter, by setting the "takenletter" variable (if we need it later on)
             holderGo.GetComponent<LetterHolderScript>().TakenLetter = letterScript;
-			//add button to lowerbox list
+			//add button to lowerbox list ##*to holder lowerbox
             _startHolderList.Add(holderGo.GetComponent<LetterHolderScript>());
         }
 
@@ -113,9 +112,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         foreach (var letter in useWord.Word)
         {
 			//instantiate lower button box
-            var holderGo = Instantiate(TargetHolder, StartBox.transform);
+            var holderGo = Instantiate(ButtonHolderPrefab, StartBox.transform);
 			//instantiate button
-            var letterGo = Instantiate(LetterPrefab, StartBox.transform) as GameObject;
+            var letterGo = Instantiate(LetterButtonPrefab, StartBox.transform) as GameObject;
             var letterScript = letterGo.GetComponent<LetterButtonScript>();
             //set parent of letter to holder 
             letterGo.transform.SetParent(holderGo.transform);
@@ -128,7 +127,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             _letterList.Add(letterGo.GetComponent<LetterButtonScript>());
 			//set buttonposition to occupied in lower box
             holderGo.GetComponent<LetterHolderScript>().IsTaken = true;
-			//?
+			//? ## same as above, but with the correctButtonLetter
             holderGo.GetComponent<LetterHolderScript>().TakenLetter = letterScript;
 			//add button to lowerbox list
             _startHolderList.Add(holderGo.GetComponent<LetterHolderScript>());
@@ -148,7 +147,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         foreach (var letter in useWord.Word)
         {
 			//instantiates the gameobjects
-            var letterGo = Instantiate(TargetHolder, TargetBox.transform) as GameObject;
+            var letterGo = Instantiate(ButtonHolderPrefab, TargetBox.transform) as GameObject;
             var targetButton = letterGo.GetComponent<LetterHolderScript>();
 			//sets the empty box to not yet occupied
             targetButton.IsTaken = false;
@@ -167,19 +166,31 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//activates on click on button
     public void ButtonGetsClicked(LetterButtonScript button)
     {
-        //set button in upperbox and place position of button to next free target
+        //set button in upperbox and place position of button to next free target ##only do this stuff, if the clicked button was in the lower box in the first place
         if (button.LowerBox)
         {
-			//?
-            var firstFreeTarget = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
-			//sets the position to occupied
-            firstFreeTarget.IsTaken = true;
-			//assigns the button to parent 
-            button.gameObject.transform.SetParent(firstFreeTarget.transform);
-			//transforms button to right position
-            button.GetComponent<RectTransform>().position = firstFreeTarget.GetComponent<RectTransform>().position;
-            //button is no longer in the lower bix
-			button.LowerBox = false;
+            // ##you have to check if there is a not taken gameobject at all, otherwise it will return a nullpointer error if there are no free button holders.
+            //check to see if there are any free button holder; does this list has any item which is not taken?
+            if (_targetHolderList.Any(holder => !holder.IsTaken))
+            {
+                //there are some free ones
+                
+                //? ##create a local variable (only allowed in this function). in the _targetHolderList (=all button holder gameobjects (=that can store and hold button letters) in upper box) get the first gameobject/script that is not taken and if there is one, set it as the value of the new variable firstFreeTarget
+                var firstFreeTarget = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
+                //sets the position to occupied
+                firstFreeTarget.IsTaken = true;
+                //assigns the button to parent 
+                button.gameObject.transform.SetParent(firstFreeTarget.transform);
+                //transforms button to right position
+                button.GetComponent<RectTransform>().position = firstFreeTarget.GetComponent<RectTransform>().position;
+                //button is no longer in the lower bix
+                button.LowerBox = false;
+            }
+            else
+            {
+                //there are no free ones
+                Debug.Log("no space in target for the clicked button ... what to do? ;)");
+            }
         }
     }
 }

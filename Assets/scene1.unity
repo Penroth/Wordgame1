@@ -352,16 +352,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartBox: {fileID: 1903038439}
-  LetterPrefab: {fileID: 1987808605432042, guid: 423cca640f16e5948a7337f42d203a96,
+  LetterButtonPrefab: {fileID: 1987808605432042, guid: 423cca640f16e5948a7337f42d203a96,
     type: 2}
   TargetBox: {fileID: 972372808}
-  TargetHolder: {fileID: 1286822478225024, guid: 1a5eab00858deb14d8eabaacfc0218e2,
+  ButtonHolderPrefab: {fileID: 1286822478225024, guid: 1a5eab00858deb14d8eabaacfc0218e2,
     type: 2}
   Words:
   - {fileID: 11400000, guid: d9bd6b048a492314c8d6cbdabfb58b74, type: 2}
   - {fileID: 11400000, guid: cbfba3725d2763640b7c50574c5ff16c, type: 2}
   - {fileID: 11400000, guid: 0539b7892c10e0b4982d0592adb11fec, type: 2}
   - {fileID: 11400000, guid: 55febe0a6c7ff3040932551032769556, type: 2}
+  _targetHolderList: []
+  _startHolderList: []
+  _letterList: []
 --- !u!4 &1288393413
 Transform:
   m_ObjectHideFlags: 0
