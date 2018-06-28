@@ -1,0 +1,16 @@
+.DS_Store
+Library
+Temp
+bin
+/.vs
+*.csproj
+*.pidb
+*.unityproj
+*.sln
+*.userprefs
+/.vs/UnityVS.Prosodiya/v14
+*.suo
+/ProjectSettings/ProjectVersion.txt
+/ProsodiyaConsole/bin
+/ProsodiyaConsole/obj
+/Screenshots
