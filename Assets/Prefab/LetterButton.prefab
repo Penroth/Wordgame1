@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 114936011362028462}
   - component: {fileID: 114619160531651886}
   m_Layer: 0
-  m_Name: Button
+  m_Name: LetterButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,10 +72,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc1bbfcd0ac717488ba63260dc78085, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Letter: 
-  LetterCharacter: {fileID: 114359357276338408, guid: ddd5232ba9be5964fb10d7e00f8a94a5,
-    type: 2}
-  lowerBox: 0
+  LetterCharacter: {fileID: 114831889316619700}
+  LowerBox: 0
+  IsDistractor: 0
 --- !u!114 &114831889316619700
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -214,8 +213,8 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}

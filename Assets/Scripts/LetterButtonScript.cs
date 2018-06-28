@@ -5,9 +5,10 @@ using UnityEngine.UI;
 
 public class LetterButtonScript : MonoBehaviour {
 
-	public string Letter;
-	public Text LetterCharacter; 
-	public bool lowerBox;
+	public Text LetterCharacter;
+    public bool LowerBox;
+    public bool IsDistractor;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -21,9 +22,8 @@ public class LetterButtonScript : MonoBehaviour {
 
 	public void OnButtonCLick(){
 		Debug.Log ("hihuhu");
-		if (lowerBox)
-			lowerBox = false;
-		//pos ändern
+        //call weiter geben
+        TaskController.Instance.ButtonGetsClicked(this);
 	}
 
 	public void setLetter(char l){
