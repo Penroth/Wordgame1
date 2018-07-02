@@ -20,7 +20,7 @@ public class LetterButtonScript : MonoBehaviour {
 	}
 
 
-	public void OnButtonCLick(){
+	public void OnButtonClick(){
         //call weiter geben
         TaskController.Instance.ButtonGetsClicked(this);
 	}

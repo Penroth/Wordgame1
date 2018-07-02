@@ -15,8 +15,13 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     public GameObject TargetBox;
 	//empty holder button prefab
     public GameObject ButtonHolderPrefab;
+	//check box 
+	public GameObject CheckBox;
+	//check button
+	public GameObject CheckButtonPrefab;
 	//list of words to work with
     public List<WordItem> Words;
+
 
 	//create list for upperletterbox
     public List<LetterHolderScript> _targetHolderList = new List<LetterHolderScript>();
@@ -66,6 +71,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         PrepareScene();
     }
 
+
+
     // Use this for initialization
     public void PrepareScene()
     {
@@ -75,17 +82,20 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         Debug.Log("start");
 
 		//chose a random word - replace with fixed order later
-        int wordcount = Words.Capacity;
-        int randomIndex = Random.Range(0, wordcount);
-        WordItem useWord = Words[randomIndex];
+		int wordcount = Words.Capacity;
+		int randomIndex = Random.Range(0, wordcount);
+		WordItem useWord = Words[randomIndex];
 
-        //erst holder gameobj erstellen
-        //...
+		//instantiate CheckButton
+		var checkButtonGo = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
+		var checkScript = checkButtonGo.GetComponent<CheckButtonScript>();
+
+
 
 		//instantiate distractor buttons and add them to the lowerboxlist
         foreach (var distractorStr in useWord.Distractors)
         {
-			//instantiate lower button box ##instantiate button holder in startBox
+			//instantiate button holder in startBox
             var holderGo = Instantiate(ButtonHolderPrefab, StartBox.transform);
 
 			//instantiate Button
@@ -95,7 +105,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             letterGo.transform.SetParent(holderGo.transform);
 			//set textvalue of button to distractor char
             letterScript.LetterCharacter.text = distractorStr;
-			//button is in the lower box and is a disctractor ##set it
+			//set button to the lower box and to a disctractor
             letterScript.LowerBox = true;
             letterScript.IsDistractor = true;
 			//add distractor to letterlist
@@ -104,7 +114,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             holderGo.GetComponent<LetterHolderScript>().IsTaken = true;
 			//? ##tell the holderGo (and its script) that he is holding "letterScript" now. This is the button gameobject with the letter in it. So he knows that he is holding the letter, by setting the "takenletter" variable (if we need it later on)
             holderGo.GetComponent<LetterHolderScript>().TakenLetter = letterScript;
-			//add button to lowerbox list ##*to holder lowerbox
+			//add button to holder lowerbox list 
             _startHolderList.Add(holderGo.GetComponent<LetterHolderScript>());
         }
 
@@ -120,7 +130,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             letterGo.transform.SetParent(holderGo.transform);
 			//set textvalue of button to wordletter char
             letterScript.LetterCharacter.text = letter.ToString();
-			//button is in lower box and not a distractor
+			//set button to lower box and to not a distractor
             letterScript.LowerBox = true;
             letterScript.IsDistractor = false;
 			//add letter to letterlist
@@ -159,10 +169,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
     }
 
-    public void Check()
-    {
-        //vergleich target liste (converted to string) mit word
-    }
+
 	//activates on click on button
     public void ButtonGetsClicked(LetterButtonScript button)
     {
@@ -183,7 +190,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
                 button.gameObject.transform.SetParent(firstFreeTarget.transform);
                 //transforms button to right position
                 button.GetComponent<RectTransform>().position = firstFreeTarget.GetComponent<RectTransform>().position;
-                //button is no longer in the lower bix
+                //button is no longer in the lower box
                 button.LowerBox = false;
             }
             else
@@ -191,6 +198,36 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
                 //there are no free ones
                 Debug.Log("no space in target for the clicked button ... what to do? ;)");
             }
+
         }
     }
+
+
+	public void Check(CheckButtonScript button)
+	{
+		
+		var upperWord = "";
+		var lowerWord = "";
+		Debug.Log ("checkanfang");
+		foreach (var upperLetter in _targetHolderList) 
+		{
+			var upperButtonChar = upperLetter.TakenLetter.LetterCharacter.text;
+			upperWord = upperWord + upperButtonChar;
+		}
+		foreach (var lowerLetter in _letterList) 
+		{
+			if (!lowerLetter.IsDistractor) 
+			{
+				var lowerButtonChar = lowerLetter.LetterCharacter.text;
+				lowerWord = lowerWord + lowerButtonChar;
+			}
+
+		}
+
+		if (lowerWord == upperWord) {
+			Debug.Log ("heyo, passt");
+		} else {
+			Debug.Log (upperWord);
+		}
+	}
 }
