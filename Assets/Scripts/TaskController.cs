@@ -20,8 +20,17 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public GameObject CheckBox;
 	//check button
 	public GameObject CheckButtonPrefab;
+	private CheckButtonScript _checkButtonScript;
 	//list of words to work with
     public List<WordItem> Words;
+	//greencheckBox for positioning 
+	public GameObject greenMarkBox;
+	//green check mark for correct answers
+	public GameObject greenCheck;
+	//redmarkBox for positioning 
+	public GameObject RedMarkBox;
+	//red x for wrong answers
+	public GameObject redX;
 
 
 	//create list for upperletterbox
@@ -55,24 +64,18 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
     }
 
-//
-//    void shuffle(char[] toShuffle)
-//    {
-//        for (int l = 0; l < toShuffle.Length; l++)
-//        {
-//            char tmp = toShuffle[l];
-//            int rando = Random.Range(l, toShuffle.Length);
-//            toShuffle[l] = toShuffle[rando];
-//            toShuffle[rando] = tmp;
-//        }
-//    }
+
+	//for choosing a WordItem
+	public int wordItemCount = 0;
+	//for switching scenes
+	public int sceneCounter = 0;
+
 
     void Start()
     {
         PrepareScene();
     }
-
-
+		
 
     // Use this for initialization
     public void PrepareScene()
@@ -82,15 +85,17 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         
         Debug.Log("start");
 
+
+		WordItem useWord = Words[wordItemCount];
 		//chose a random word - replace with fixed order later
-		int wordcount = Words.Capacity;
-		int randomIndex = Random.Range(0, wordcount);
-		WordItem useWord = Words[randomIndex];
+		//int wordcount = Words.Capacity;
+		//int randomIndex = Random.Range(0, wordcount);
+		//WordItem useWord = Words[randomIndex];
 
 		//instantiate CheckButton
 		var checkButtonGo = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
-		var checkScript = checkButtonGo.GetComponent<CheckButtonScript>();
-        checkScript.SetInteractable(false);
+		_checkButtonScript = checkButtonGo.GetComponent<CheckButtonScript>();
+		_checkButtonScript.SetInteractable(false);
 
 
 
@@ -195,7 +200,13 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             }
         }
 
-        // check if upper box is full, iof so set check interactable
+        //check if upper box is full, if so set check interactable
+		if (_targetHolderList.Last<LetterHolderScript> ().IsTaken) 
+		{
+			//muss an den bereits instanziierten button, wie?
+			_checkButtonScript.SetInteractable(true);
+
+		}
     }
 
 
@@ -204,7 +215,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		
 		var upperWord = "";
 		var lowerWord = "";
-		Debug.Log ("checkanfang");
 		foreach (var upperLetter in _targetHolderList) 
 		{
 			var upperButtonChar = upperLetter.TakenLetter.LetterCharacter.text;
@@ -222,6 +232,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 		if (lowerWord.Equals(upperWord) ) {
 			Debug.Log ("heyo, passt");
+			//show right symvol
+			StartCoroutine(ShowPositiveFeedback());
             //switch scene if list is empty, counter is out of bounds
             // start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
             
@@ -235,10 +247,11 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     public void CleanupScene()
     {
         //counter increase
+		wordItemCount++;
         //children gameobjects of upper and lower box container destroy
-        foreach (var letterHolderScript in _targetHolderList)
+        foreach (var holderItem in _targetHolderList)
         {
-            Destroy(letterHolderScript.gameObject);
+			Destroy(holderItem.gameObject);
         }
         _targetHolderList.Clear();
     }
@@ -247,12 +260,22 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     {
         //step 1
         //instanziiere bild mit rotem X in der mitte vom screen
-        //var redSymvbol = Instantiate()
+		var wrongMark = Instantiate(redX, RedMarkBox.transform) as GameObject;
         yield return new WaitForSeconds(4f);
-        ////step 2
-        ////kill bild mit rotem x in der mitte
-        //Destroy(redSymvbol);
+        //step 2
+        //kill bild mit rotem x in der mitte
+		Destroy(wrongMark);
     }
+	public IEnumerator ShowPositiveFeedback()
+	{
+		//step 1
+		//instanziiere bild mit rotem X in der mitte vom screen
+		var rightMark = Instantiate(greenCheck, greenMarkBox.transform) as GameObject;
+		yield return new WaitForSeconds(4f);
+		//step 2
+		//kill bild mit rotem x in der mitte
+		Destroy(rightMark);
+	}
 
 
     /*
