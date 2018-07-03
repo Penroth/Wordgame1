@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CheckButtonScript : MonoBehaviour {
+[RequireComponent(typeof(Button))]
+public class CheckButtonScript : MonoBehaviour
+{
+    public void OnCheckButtonClick()
+    {
+        //call weiter geben
+        TaskController.Instance.Check(this);
+    }
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	public void OnCheckButtonClick(){
-		//call weiter geben
-		TaskController.Instance.Check(this);
-	}
+    public void SetInteractable(bool b)
+    {
+        this.GetComponent<Button>().interactable = b;
+    }
 }

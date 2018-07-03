@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -89,6 +90,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//instantiate CheckButton
 		var checkButtonGo = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
 		var checkScript = checkButtonGo.GetComponent<CheckButtonScript>();
+        checkScript.SetInteractable(false);
 
 
 
@@ -184,22 +186,16 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
                 
                 //? ##create a local variable (only allowed in this function). in the _targetHolderList (=all button holder gameobjects (=that can store and hold button letters) in upper box) get the first gameobject/script that is not taken and if there is one, set it as the value of the new variable firstFreeTarget
                 var firstFreeTarget = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
-                //sets the position to occupied
-                firstFreeTarget.IsTaken = true;
-                //assigns the button to parent 
-                button.gameObject.transform.SetParent(firstFreeTarget.transform);
-                //transforms button to right position
-                button.GetComponent<RectTransform>().position = firstFreeTarget.GetComponent<RectTransform>().position;
-                //button is no longer in the lower box
-                button.LowerBox = false;
+                firstFreeTarget.PlaceButton(button);
             }
             else
             {
                 //there are no free ones
                 Debug.Log("no space in target for the clicked button ... what to do? ;)");
             }
-
         }
+
+        // check if upper box is full, iof so set check interactable
     }
 
 
@@ -224,10 +220,53 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 		}
 
-		if (lowerWord == upperWord) {
+		if (lowerWord.Equals(upperWord) ) {
 			Debug.Log ("heyo, passt");
+            //switch scene if list is empty, counter is out of bounds
+            // start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
+            
 		} else {
 			Debug.Log (upperWord);
+            //show wrong symbol
+		    StartCoroutine(ShowNegativeFeedback());
 		}
 	}
+
+    public void CleanupScene()
+    {
+        //counter increase
+        //children gameobjects of upper and lower box container destroy
+        foreach (var letterHolderScript in _targetHolderList)
+        {
+            Destroy(letterHolderScript.gameObject);
+        }
+        _targetHolderList.Clear();
+    }
+
+    public IEnumerator ShowNegativeFeedback()
+    {
+        //step 1
+        //instanziiere bild mit rotem X in der mitte vom screen
+        //var redSymvbol = Instantiate()
+        yield return new WaitForSeconds(4f);
+        ////step 2
+        ////kill bild mit rotem x in der mitte
+        //Destroy(redSymvbol);
+    }
+
+
+    /*
+     * 1) gameloop mit cleanup + feedback und neuen wörter im nächsten durchlauf
+     * 2) release function von holder script erstellen, also wenn button von upper in lower released wird
+     * 3) kinder suchen
+     *  
+     * next steps:
+     * button lösch funktion (button unten links dafür), verknüpfen mit release funktion im holder script
+     * ein WordItem pro Durchlauf, feste Reihenfolge für Worditems 
+     * Wenn liste durchlaufen, switch in celebration scene
+     * Startscreen, Endscreen (Celebration, scene03)
+     * Einblendung für Kinder bei richtigem oder falschem Wort
+     * 
+     * Drag n Drop oder Click Version auswählbar im Startscreen
+     */
 }
