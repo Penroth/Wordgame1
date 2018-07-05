@@ -67,8 +67,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	//for choosing a WordItem
 	public int wordItemCount = 0;
-	//for switching scenes
-	public int sceneCounter = 0;
 
 
     void Start()
@@ -203,7 +201,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         //check if upper box is full, if so set check interactable
 		if (_targetHolderList.Last<LetterHolderScript> ().IsTaken) 
 		{
-			//muss an den bereits instanziierten button, wie?
 			_checkButtonScript.SetInteractable(true);
 
 		}
@@ -212,7 +209,10 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	public void Check(CheckButtonScript button)
 	{
-		
+
+		//count of all Worditems for scene switch once all words are done
+		int wordItemMax = Words.Capacity;
+
 		var upperWord = "";
 		var lowerWord = "";
 		foreach (var upperLetter in _targetHolderList) 
@@ -232,10 +232,12 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 		if (lowerWord.Equals(upperWord) ) {
 			Debug.Log ("heyo, passt");
+			//switch scene if list is empty, counter is out of bounds
+			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol
 			StartCoroutine(ShowPositiveFeedback());
-            //switch scene if list is empty, counter is out of bounds
-            // start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
+
+
             
 		} else {
 			Debug.Log (upperWord);
@@ -253,7 +255,27 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         {
 			Destroy(holderItem.gameObject);
         }
+		foreach (var startItem in _startButtonList) 
+		{
+			Destroy (startItem.gameObject);
+		}
+		foreach (var letter in _letterList) 
+		{
+			Destroy (letter.gameObject);
+		}
+		foreach (var startHolder in _startHolderList) 
+		{
+			Destroy (startHolder.gameObject);
+		}
+		Destroy (_checkButtonScript.gameObject);
+		_startButtonList.Clear ();
         _targetHolderList.Clear();
+		_letterList.Clear ();
+		_startHolderList.Clear ();
+
+		//check if there are Words left
+
+
     }
 
     public IEnumerator ShowNegativeFeedback()
@@ -268,13 +290,33 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     }
 	public IEnumerator ShowPositiveFeedback()
 	{
+		int wordItemMax = Words.Capacity;
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var rightMark = Instantiate(greenCheck, greenMarkBox.transform) as GameObject;
-		yield return new WaitForSeconds(4f);
+		yield return new WaitForSeconds(3f);
 		//step 2
 		//kill bild mit rotem x in der mitte
 		Destroy(rightMark);
+		//step 3
+		//cleanup scene
+		CleanupScene();
+		//step 4 
+		//load next scene with new word
+		//count of all Worditems for scene switch once all words are done
+
+		if (wordItemCount == wordItemMax)
+		{
+			//switch to endscreen
+			Debug.Log("feddich, szenenwechsel");
+		}
+
+		else
+		{
+			PrepareScene();
+		}
+
+
 	}
 
 
