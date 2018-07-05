@@ -104,10 +104,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             var holderGo = Instantiate(ButtonHolderPrefab, StartBox.transform);
 
 			//instantiate Button
-            var letterGo = Instantiate(LetterButtonPrefab, StartBox.transform) as GameObject;
+            var letterGo = Instantiate(LetterButtonPrefab, holderGo.transform) as GameObject;
             var letterScript = letterGo.GetComponent<LetterButtonScript>();
-            //set gameobject parent of letter to button holder
-            letterGo.transform.SetParent(holderGo.transform);
 			//set textvalue of button to distractor char
             letterScript.LetterCharacter.text = distractorStr;
 			//set button to the lower box and to a disctractor
@@ -129,10 +127,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 			//instantiate lower button box
             var holderGo = Instantiate(ButtonHolderPrefab, StartBox.transform);
 			//instantiate button
-            var letterGo = Instantiate(LetterButtonPrefab, StartBox.transform) as GameObject;
+            var letterGo = Instantiate(LetterButtonPrefab, holderGo.transform) as GameObject;
             var letterScript = letterGo.GetComponent<LetterButtonScript>();
-            //set parent of letter to holder 
-            letterGo.transform.SetParent(holderGo.transform);
 			//set textvalue of button to wordletter char
             letterScript.LetterCharacter.text = letter.ToString();
 			//set button to lower box and to not a distractor
