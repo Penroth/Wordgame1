@@ -38,3 +38,5 @@ C:\Users\MariusKrieger\Documents\Unity\Wordgame\Temp\bin\Debug\UnityEngine.HoloL
 C:\Users\MariusKrieger\Documents\Unity\Wordgame\Temp\bin\Debug\UnityEngine.SpatialTracking.xml
 C:\Users\MariusKrieger\Documents\Unity\Wordgame\obj\Debug\Assembly-CSharp.dll
 C:\Users\MariusKrieger\Documents\Unity\Wordgame\obj\Debug\Assembly-CSharp.pdb
+C:\Users\MariusKrieger\Documents\Unity\Wordgame1\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
+C:\Users\MariusKrieger\Documents\Unity\Wordgame1\obj\Debug\Assembly-CSharp.dll

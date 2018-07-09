@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LetterHolderScript : MonoBehaviour
 {
@@ -22,8 +23,22 @@ public class LetterHolderScript : MonoBehaviour
         button.LowerBox = false;
     }
 
-    public void ReleaseButton(LetterButtonScript button)
-    {
-        // if button gets deleted from holder
-    }
+	public void OnReleaseButtonClick()
+	{
+		TaskController.Instance.ReleaseButton(this);
+	}
+
+	public void SetInteractableRelease(bool b)
+	{
+		this.GetComponent<Button>().interactable = b;
+	}
+
+	public void ReleaseButton(LetterHolderScript button)
+	{
+
+		//sets upper position to unoccupied occupied
+		this.IsTaken = false;
+
+	}
+		
 }

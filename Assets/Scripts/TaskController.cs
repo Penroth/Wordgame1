@@ -21,6 +21,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//check button
 	public GameObject CheckButtonPrefab;
 	private CheckButtonScript _checkButtonScript;
+	private LetterHolderScript _releaseButtonScript;
 	//list of words to work with
     public List<WordItem> Words;
 	//greencheckBox for positioning 
@@ -31,6 +32,11 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public GameObject RedMarkBox;
 	//red x for wrong answers
 	public GameObject redX;
+	//release button box
+	public GameObject ReleaseButtonBox;
+	//release button
+	public GameObject ReleaseButtonPrefab;
+
 
 
 	//create list for upperletterbox
@@ -85,15 +91,17 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 
 		WordItem useWord = Words[wordItemCount];
-		//chose a random word - replace with fixed order later
-		//int wordcount = Words.Capacity;
-		//int randomIndex = Random.Range(0, wordcount);
-		//WordItem useWord = Words[randomIndex];
+
 
 		//instantiate CheckButton
 		var checkButtonGo = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
 		_checkButtonScript = checkButtonGo.GetComponent<CheckButtonScript>();
 		_checkButtonScript.SetInteractable(false);
+
+		//instantiate release Button
+		var releaseButtonGo = Instantiate(ReleaseButtonPrefab, ReleaseButtonBox.transform) as GameObject;
+		_releaseButtonScript = releaseButtonGo.GetComponent<LetterHolderScript>();
+		_releaseButtonScript.SetInteractableRelease(false);
 
 
 
@@ -171,10 +179,10 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     }
 
 
-	//activates on click on button
+	//activates on click on button and set button in upperbox and place position of button to next free target
     public void ButtonGetsClicked(LetterButtonScript button)
     {
-        //set button in upperbox and place position of button to next free target ##only do this stuff, if the clicked button was in the lower box in the first place
+        //if the clicked button is in the lower box 
         if (button.LowerBox)
         {
             // ##you have to check if there is a not taken gameobject at all, otherwise it will return a nullpointer error if there are no free button holders.
@@ -200,7 +208,25 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 			_checkButtonScript.SetInteractable(true);
 
 		}
+		if (_targetHolderList.First<LetterHolderScript> ().IsTaken) 
+		{
+			_releaseButtonScript.SetInteractableRelease (true);
+		}
     }
+
+	public void ReleaseButton (LetterHolderScript button)
+	{
+		//var LastLetter = _targetHolderList.LastOrDefault (letter => letter.IsTaken);
+		Debug.Log("löschen"); 
+		if (_startHolderList.LastOrDefault (holder => !holder.IsTaken)) 
+		{
+			//get last object of _targetholderlist
+			//put it in lower box 
+			//delete last object of _targetholderlist
+
+		}
+
+	}
 
 
 	public void Check(CheckButtonScript button)
@@ -227,7 +253,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		}
 
 		if (lowerWord.Equals(upperWord) ) {
-			Debug.Log ("heyo, passt");
 			//switch scene if list is empty, counter is out of bounds
 			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol
@@ -264,14 +289,11 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 			Destroy (startHolder.gameObject);
 		}
 		Destroy (_checkButtonScript.gameObject);
+		Destroy (_releaseButtonScript.gameObject);
 		_startButtonList.Clear ();
         _targetHolderList.Clear();
 		_letterList.Clear ();
 		_startHolderList.Clear ();
-
-		//check if there are Words left
-
-
     }
 
     public IEnumerator ShowNegativeFeedback()
@@ -305,6 +327,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		{
 			//switch to endscreen
 			Debug.Log("feddich, szenenwechsel");
+			SceneManager.LoadScene ("scene03");
 		}
 
 		else
@@ -314,6 +337,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 
 	}
+
 
 
     /*
