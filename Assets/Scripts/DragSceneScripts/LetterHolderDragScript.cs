@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DragButtonScript : MonoBehaviour {
+public class LetterHolderDragScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

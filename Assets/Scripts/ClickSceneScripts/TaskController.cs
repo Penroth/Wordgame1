@@ -347,7 +347,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		{
 			//switch to endscreen
 			Debug.Log("feddich, szenenwechsel");
-			SceneManager.LoadScene ("scene03");
+			SceneManager.LoadScene ("EndScene");
 		}
 
 		else

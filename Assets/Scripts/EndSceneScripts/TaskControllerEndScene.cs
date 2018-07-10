@@ -33,6 +33,6 @@ public class TaskControllerEndScene : MonoBehaviourSingleton<TaskControllerEndSc
 
 	public void MenuButtonClick()
 	{
-		SceneManager.LoadScene ("Scene01");
+		SceneManager.LoadScene ("StartScene");
 	}
 }

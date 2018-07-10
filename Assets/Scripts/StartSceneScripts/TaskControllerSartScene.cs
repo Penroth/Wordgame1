@@ -37,9 +37,15 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 		_dragButtonScript = DragButtonGo.GetComponent<DragButtonScript> ();
 	}
 
-	public void Click()
+	public void ClickOnClick()
 	{
 		Debug.Log ("click in task");
-		SceneManager.LoadScene ("Scene02");
+		SceneManager.LoadScene ("ClickScene");
+	}
+
+	public void DragOnClick()
+	{
+		Debug.Log ("drag in task");
+		SceneManager.LoadScene ("DragScene");
 	}
 }
