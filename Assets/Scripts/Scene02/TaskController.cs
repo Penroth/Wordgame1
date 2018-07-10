@@ -308,17 +308,30 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
     public IEnumerator ShowNegativeFeedback()
     {
+		//step 0
+		//set check and release to not interactable
+		_checkButtonScript.SetInteractable(false);
+		_releaseButtonScript.SetInteractableRelease (false);
         //step 1
         //instanziiere bild mit rotem X in der mitte vom screen
 		var wrongMark = Instantiate(redX, RedMarkBox.transform) as GameObject;
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
         //step 2
         //kill bild mit rotem x in der mitte
 		Destroy(wrongMark);
+		//step 4 
+		//set check and release interactable again
+		_checkButtonScript.SetInteractable(true);
+		_releaseButtonScript.SetInteractableRelease(true);
+
     }
 	public IEnumerator ShowPositiveFeedback()
 	{
 		int wordItemMax = Words.Capacity;
+		//step 0 
+		//set check and release to not interactable
+		_checkButtonScript.SetInteractable(false);
+		_releaseButtonScript.SetInteractableRelease (false);
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var rightMark = Instantiate(greenCheck, greenMarkBox.transform) as GameObject;
@@ -329,9 +342,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//step 3
 		//cleanup scene
 		CleanupScene();
-		//step 4 
-		//load next scene with new word
-		//count of all Worditems for scene switch once all words are done
 
 		if (wordItemCount == wordItemMax)
 		{
