@@ -21,7 +21,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//check button
 	public GameObject CheckButtonPrefab;
 	private CheckButtonScript _checkButtonScript;
-	private LetterHolderScript _releaseButtonScript;
+	private ReleaseButtonScript _releaseButtonScript;
 	//list of words to work with
     public List<WordItem> Words;
 	//greencheckBox for positioning 
@@ -70,6 +70,14 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
     }
 
+    public LetterHolderScript FreeStartHolderButton
+    {
+        get
+        {
+            return (from letter in _startHolderList where !letter.IsTaken select letter).FirstOrDefault();
+        }
+    }
+
 
 	//for choosing a WordItem
 	public int wordItemCount = 0;
@@ -100,12 +108,12 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 		//instantiate release Button
 		var releaseButtonGo = Instantiate(ReleaseButtonPrefab, ReleaseButtonBox.transform) as GameObject;
-		_releaseButtonScript = releaseButtonGo.GetComponent<LetterHolderScript>();
-		_releaseButtonScript.SetInteractableRelease(false);
+        _releaseButtonScript = releaseButtonGo.GetComponent<ReleaseButtonScript>();
+        _releaseButtonScript.SetInteractableRelease(false);
 
 
 
-		//instantiate distractor buttons and add them to the lowerboxlist
+        //instantiate distractor buttons and add them to the lowerboxlist
         foreach (var distractorStr in useWord.Distractors)
         {
 			//instantiate button holder in startBox
@@ -182,6 +190,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//activates on click on button and set button in upperbox and place position of button to next free target
     public void ButtonGetsClicked(LetterButtonScript button)
     {
+        var startHolderButton = _startHolderList.Find(script => script.TakenLetter == button);
+
         //if the clicked button is in the lower box 
         if (button.LowerBox)
         {
@@ -194,6 +204,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
                 //? ##create a local variable (only allowed in this function). in the _targetHolderList (=all button holder gameobjects (=that can store and hold button letters) in upper box) get the first gameobject/script that is not taken and if there is one, set it as the value of the new variable firstFreeTarget
                 var firstFreeTarget = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
                 firstFreeTarget.PlaceButton(button);
+                startHolderButton.IsTaken = false;
+                startHolderButton.TakenLetter = null;
             }
             else
             {
@@ -214,19 +226,17 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		}
     }
 
-	public void ReleaseButton (LetterHolderScript button)
+	public void ReleaseButtonClick ()
 	{
-		//var LastLetter = _targetHolderList.LastOrDefault (letter => letter.IsTaken);
-		Debug.Log("löschen"); 
-		if (_startHolderList.LastOrDefault (holder => !holder.IsTaken)) 
-		{
-			//get last object of _targetholderlist
-			//put it in lower box 
-			//delete last object of _targetholderlist
+        //get last object of _targetholderlist
+        var lastTakenHolder = _targetHolderList.LastOrDefault(holder => holder.IsTaken);
+        lastTakenHolder.ReleaseButton();
 
-		}
-
-	}
+	    if (!_targetHolderList.First<LetterHolderScript>().IsTaken)
+	    {
+	        _releaseButtonScript.SetInteractableRelease(false);
+	    }
+    }
 
 
 	public void Check(CheckButtonScript button)

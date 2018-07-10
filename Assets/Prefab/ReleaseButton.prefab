@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222602970803868584}
   - component: {fileID: 114739687843326420}
   - component: {fileID: 114756910026119030}
-  - component: {fileID: 114593395232878510}
+  - component: {fileID: 114554746715925544}
   m_Layer: 0
   m_Name: ReleaseButton
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "Zur\xFCck"
---- !u!114 &114593395232878510
+--- !u!114 &114554746715925544
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -88,11 +88,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1426403461670830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 100de359d891e564db6360ea3c438e5c, type: 3}
+  m_Script: {fileID: 11500000, guid: eaf4a55e8b55d30468a9c4038b0e3f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsTaken: 0
-  TakenLetter: {fileID: 0}
 --- !u!114 &114739687843326420
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -159,7 +157,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114593395232878510}
+      - m_Target: {fileID: 114554746715925544}
         m_MethodName: OnReleaseButtonClick
         m_Mode: 1
         m_Arguments:
