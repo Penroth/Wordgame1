@@ -351,8 +351,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 
     /*
-     * 1) gameloop mit cleanup + feedback und neuen wörter im nächsten durchlauf
-     * 2) release function von holder script erstellen, also wenn button von upper in lower released wird
+     *Startscreen mit Auswahl drag and drop oder click
+     * Endscreen
+     * Ergebnisse abspeichern
      * 3) kinder suchen
      *  
      * next steps:
