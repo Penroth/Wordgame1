@@ -14,8 +14,12 @@ public class LetterHolderScript : MonoBehaviour
         this.IsTaken = true;
         //set the taken letter
         this.TakenLetter = button;
-        //physically place it in upper
-        button.PlaceInUpper(this);
+
+        //place button physically
+        button.GetComponent<RectTransform>().position = this.GetComponent<RectTransform>().position;
+        //adjust attributes
+        button.LowerBox = !button.LowerBox;
+        button.transform.SetParent(this.transform);
     }
 
     public void SetInteractableRelease(bool b)
@@ -27,8 +31,6 @@ public class LetterHolderScript : MonoBehaviour
     {
         if (TakenLetter != null)
         {
-            TakenLetter.PlaceInLower();
-
             //sets upper position to unoccupied occupied
             this.IsTaken = false;
             TakenLetter = null;

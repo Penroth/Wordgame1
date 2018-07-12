@@ -188,12 +188,12 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 
 	//activates on click on button and set button in upperbox and place position of button to next free target
-    public void ButtonGetsClicked(LetterButtonScript button)
+    public void LetterButtonGetsClicked(LetterButtonScript currentLetterButton)
     {
-        var startHolderButton = _startHolderList.Find(script => script.TakenLetter == button);
+        var startHolderButton = _startHolderList.Find(script => script.TakenLetter == currentLetterButton);
 
         //if the clicked button is in the lower box 
-        if (button.LowerBox)
+        if (currentLetterButton.LowerBox)
         {
             // ##you have to check if there is a not taken gameobject at all, otherwise it will return a nullpointer error if there are no free button holders.
             //check to see if there are any free button holder; does this list has any item which is not taken?
@@ -202,10 +202,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
                 //there are some free ones
                 
                 //? ##create a local variable (only allowed in this function). in the _targetHolderList (=all button holder gameobjects (=that can store and hold button letters) in upper box) get the first gameobject/script that is not taken and if there is one, set it as the value of the new variable firstFreeTarget
-                var firstFreeTarget = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
-                firstFreeTarget.PlaceButton(button);
-                startHolderButton.IsTaken = false;
-                startHolderButton.TakenLetter = null;
+                var firstFreeTargetButton = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
+                startHolderButton.ReleaseButton();
+                firstFreeTargetButton.PlaceButton(currentLetterButton);
             }
             else
             {
@@ -230,7 +229,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	{
         //get last object of _targetholderlist
         var lastTakenHolder = _targetHolderList.LastOrDefault(holder => holder.IsTaken);
+	    var buttonToPlaceInStart = lastTakenHolder.TakenLetter;
         lastTakenHolder.ReleaseButton();
+        FreeStartHolderButton.PlaceButton(buttonToPlaceInStart);
 
 	    if (!_targetHolderList.First<LetterHolderScript>().IsTaken)
 	    {
