@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114761661314546688}
   - component: {fileID: 114419273087296856}
   - component: {fileID: 61728710871628978}
+  - component: {fileID: 225443870529304554}
   m_Layer: 0
   m_Name: LetterDragPrefab
   m_TagString: Untagged
@@ -53,7 +54,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 150, y: 150}
   m_EdgeRadius: 0
 --- !u!114 &114419273087296856
 MonoBehaviour:
@@ -125,3 +126,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &225443870529304554
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1835961803063846}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

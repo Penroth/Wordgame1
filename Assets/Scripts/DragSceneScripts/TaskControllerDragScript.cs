@@ -18,10 +18,12 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	//Start Box 
 	public GameObject LowerBox;
-	//Target Box 
-	public GameObject UpperBox;
-	//letter pregab
-	public GameObject LetterDragPrefab;
+    //Target Box 
+    public GameObject UpperBox;
+    //dragging Box 
+    public GameObject DraggingBox;
+    //letter pregab
+    public GameObject LetterDragPrefab;
 	//empty Button Holder Prefab for lower and upper Box
 	public GameObject ButtonHolderPrefab;
 	//Check Box
@@ -98,11 +100,14 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		{
 			//instantiate button holder in lowerBox
 			var holderDrag = Instantiate(ButtonHolderPrefab, LowerBox.transform);
+		    var holderDragScript = holderDrag.GetComponent<LetterHolderDragScript>();
+		    holderDragScript.Lower = true;
 
-			//instantiate Button
-			var letterDrag = Instantiate(LetterDragPrefab, holderDrag.transform) as GameObject;
+            //instantiate Button
+            var letterDrag = Instantiate(LetterDragPrefab, holderDrag.transform) as GameObject;
 			var letterScript = letterDrag.GetComponent<LetterTextScript>();
-			Debug.Log ("bis hier hin ist alles gut");
+		    letterScript.Holder = holderDragScript;
+            Debug.Log ("bis hier hin ist alles gut");
 			//set textvalue to distractor char
 			letterScript.GetComponent<Text>().text= distractorStr;
 			//set button to the lower box and to a disctractor
@@ -111,12 +116,12 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			Debug.Log ("distractor test");
 			//add distractor to letterlist
 			_letterList.Add(letterDrag.GetComponent<LetterTextScript>());
-			//Set button position to occupied in lower box
-			holderDrag.GetComponent<LetterHolderDragScript>().IsTaken = true;
-			//? ##tell the holderGo (and its script) that he is holding "letterScript" now. This is the button gameobject with the letter in it. So he knows that he is holding the letter, by setting the "takenletter" variable (if we need it later on)
-			holderDrag.GetComponent<LetterHolderDragScript>().TakenLetter = letterScript;
+            //Set button position to occupied in lower box
+		    holderDragScript.IsTaken = true;
+            //? ##tell the holderGo (and its script) that he is holding "letterScript" now. This is the button gameobject with the letter in it. So he knows that he is holding the letter, by setting the "takenletter" variable (if we need it later on)
+		    holderDragScript.TakenLetter = letterScript;
 			//add button to holder lowerbox list 
-			_startHolderDragList.Add(holderDrag.GetComponent<LetterHolderDragScript>());
+			_startHolderDragList.Add(holderDragScript);
 		}
 
 		//instantiate wordletter buttons and add them to the lowerboxlist
@@ -124,22 +129,27 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		{
 			//instantiate lower button box
 			var holderDrag = Instantiate(ButtonHolderPrefab, LowerBox.transform);
-			//instantiate button
-			var letterDrag = Instantiate(LetterDragPrefab, holderDrag.transform) as GameObject;
+		    var holderDragScript = holderDrag.GetComponent<LetterHolderDragScript>();
+		    holderDragScript.Lower = true;
+
+            //instantiate button
+            var letterDrag = Instantiate(LetterDragPrefab, holderDrag.transform) as GameObject;
 			var letterScript = letterDrag.GetComponent<LetterTextScript>();
-			//set textvalue of button to wordletter char
-			letterScript.GetComponent<Text>().text = letterChar.ToString();
+		    letterScript.Holder = holderDragScript;
+
+            //set textvalue of button to wordletter char
+            letterScript.GetComponent<Text>().text = letterChar.ToString();
 			//set button to lower box and to not a distractor
 			letterScript.LowerBox = true;
 			letterScript.IsDistractor = false;
 			//add letter to letterlist
 			_letterList.Add(letterDrag.GetComponent<LetterTextScript>());
-			//set buttonposition to occupied in lower box
-			holderDrag.GetComponent<LetterHolderDragScript>().IsTaken = true;
-			//? ## same as above, but with the correctButtonLetter
-			holderDrag.GetComponent<LetterHolderDragScript>().TakenLetter = letterScript;
+            //set buttonposition to occupied in lower box
+		    holderDragScript.IsTaken = true;
+            //? ## same as above, but with the correctButtonLetter
+		    holderDragScript.TakenLetter = letterScript;
 			//add button to lowerbox list
-			_startHolderDragList.Add(holderDrag.GetComponent<LetterHolderDragScript>());
+			_startHolderDragList.Add(holderDragScript);
 		}
 
 		//shuffle the buttons
@@ -154,8 +164,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			//instantiates the gameobjects
 			var letterDrag = Instantiate(ButtonHolderPrefab, UpperBox.transform) as GameObject;
 			var targetDrag = letterDrag.GetComponent<LetterHolderDragScript>();
-			//sets the empty box to not yet occupied
-			targetDrag.IsTaken = false;
+		    targetDrag.Lower = false;
+            //sets the empty box to not yet occupied
+            targetDrag.IsTaken = false;
 			//add an entry in the upperbox list
 			_targetHolderDragList.Add(targetDrag);
 		}
@@ -285,5 +296,10 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		_letterList.Clear ();
 		_startHolderDragList.Clear ();
 	}
-		
+
+    public void TmpPlaceLetterInStart(LetterTextScript letterToStore)
+    {
+        var firstFreeStartHolder = (from letter in _startHolderDragList where !letter.IsTaken select letter).FirstOrDefault();
+        firstFreeStartHolder.PlaceButton(letterToStore);
+    }
 }

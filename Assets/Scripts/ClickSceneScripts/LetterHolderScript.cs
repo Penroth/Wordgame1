@@ -21,12 +21,7 @@ public class LetterHolderScript : MonoBehaviour
         button.LowerBox = !button.LowerBox;
         button.transform.SetParent(this.transform);
     }
-
-    public void SetInteractableRelease(bool b)
-    {
-        this.GetComponent<Button>().interactable = b;
-    }
-
+    
     public void ReleaseButton()
     {
         if (TakenLetter != null)
