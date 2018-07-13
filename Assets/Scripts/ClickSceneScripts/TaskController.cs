@@ -60,7 +60,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     }
 
 	//list with the letters in the upperbox
-    private List<LetterButtonScript> _targteButtonList
+    private List<LetterButtonScript> _targetuttonList
     {
         get
         {

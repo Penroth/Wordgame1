@@ -11,7 +11,8 @@ public class LetterButtonScript : MonoBehaviour {
 
 
 
-	public void OnButtonClick(){
+	public void OnButtonClick()
+	{
         //call weiter geben
         TaskController.Instance.LetterButtonGetsClicked(this);
 	}

@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Button))]
 public class CheckButtonDragScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+	public void OnCheckButton()
+	{
+		//call weiter geben
+		TaskControllerDragScript.Instance.Check(this);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public void SetInteractable(bool b)
+	{
+		this.GetComponent<Button>().interactable = b;
 	}
 }
