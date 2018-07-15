@@ -9,9 +9,6 @@ using System.Linq;
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>//, IBeginDragHandler, IDragHandler, IEndDragHandler 
 {
 	//todo: 
-	// buchstaben wieder nach unten verschiebbar machen
-	// isTaken bei verschieben oben zurück setzen
-	// check button interactable wenn liste oben voll, wo?
 	// poitives und negatives prefab tauschen
 	// hintergrund für buchstaben
 
@@ -48,7 +45,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	//list for all letters (distractors + wordletters)
 	public List <LetterTextScript> _letterList = new List <LetterTextScript>();
 
-	private CheckButtonDragScript _checkButtonScript;
+	public CheckButtonDragScript checkButtonScript;
 
 	//pushes letters from startbox to a list
 	private List<LetterTextScript> _startDragList
@@ -62,7 +59,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	}
 
 	//list with the letters in the upperbox
-	private List<LetterTextScript> _targetDragList
+	public List<LetterTextScript> targetDragList
 	{
 		get
 		{
@@ -77,6 +74,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	//for choosing a WordItem
 	public int wordItemCount = 0;
 
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -90,8 +88,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 		//instantiate CheckButton
 		var checkButtonDrag = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
-		_checkButtonScript = checkButtonDrag.GetComponent<CheckButtonDragScript>();
-		//_checkButtonScript.SetInteractable(false);
+		checkButtonScript = checkButtonDrag.GetComponent<CheckButtonDragScript>();
+		checkButtonScript.SetInteractable(false);
 
 
 
@@ -107,13 +105,11 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
             var letterDrag = Instantiate(LetterDragPrefab, holderDrag.transform) as GameObject;
 			var letterScript = letterDrag.GetComponent<LetterTextScript>();
 		    letterScript.Holder = holderDragScript;
-            Debug.Log ("bis hier hin ist alles gut");
 			//set textvalue to distractor char
 			letterScript.GetComponent<Text>().text= distractorStr;
 			//set button to the lower box and to a disctractor
 			letterScript.LowerBox = true;
 			letterScript.IsDistractor = true;
-			Debug.Log ("distractor test");
 			//add distractor to letterlist
 			_letterList.Add(letterDrag.GetComponent<LetterTextScript>());
             //Set button position to occupied in lower box
@@ -179,28 +175,18 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	public void Check(CheckButtonDragScript button)
 	{
-
-		//count of all Worditems for scene switch once all words are done
-		int wordItemCap = Words.Capacity;
+		WordItem currentWordItem = Words[wordItemCount];
+		string currentWord = currentWordItem.Word;
 
 		var upperWord = "";
 		var lowerWord = "";
-		foreach (var upperLetter in _targetDragList) 
+		foreach (var upperLetter in _targetHolderDragList) 
 		{
-			var upperChar = upperLetter.GetComponent<Text>().text;
+			var upperChar = upperLetter.GetComponentInChildren<Text>().text;
 			upperWord = upperWord + upperChar;
 		}
-		foreach (var lowerLetter in _letterList) 
-		{
-			if (!lowerLetter.IsDistractor) 
-			{
-				var lowerChar = lowerLetter.GetComponent<Text>().text;
-				lowerWord = lowerWord + lowerChar;
-			}
 
-		}
-
-		if (lowerWord.Equals(upperWord) ) {
+		if (currentWord.Equals(upperWord) ) {
 			//switch scene if list is empty, counter is out of bounds
 			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol
@@ -212,6 +198,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 		} else {
 			Debug.Log (upperWord);
+			Debug.Log (lowerWord);
 			//show wrong symbol
 			StartCoroutine(ShowNegativeFeedbackDrag());
 		}
@@ -221,7 +208,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	{
 		//step 0
 		//set check and release to not interactable
-		_checkButtonScript.SetInteractable(false);
+		checkButtonScript.SetInteractable(false);
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var wrongMark = Instantiate(RedXPrefab, RedXBox.transform) as GameObject;
@@ -231,16 +218,17 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		Destroy(wrongMark);
 		//step 4 
 		//set check and release interactable again
-		_checkButtonScript.SetInteractable(true);
+		checkButtonScript.SetInteractable(true);
 
 	}
 
 	public IEnumerator ShowPositiveDragFeedback()
 	{
-		int wordItemMax = Words.Capacity;
+		//count of all Worditems for scene switch once all words are done
+		int wordItemCap = Words.Capacity;
 		//step 0 
 		//set check and release to not interactable
-		_checkButtonScript.SetInteractable(false);
+		checkButtonScript.SetInteractable(false);
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var rightMark = Instantiate(GreenMarkPrefab, GreenMarkBox.transform) as GameObject;
@@ -252,7 +240,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//cleanup scene
 		CleanupScene();
 
-		if (wordItemCount == wordItemMax)
+		if (wordItemCount == wordItemCap)
 		{
 			//switch to endscreen
 			Debug.Log("feddich, szenenwechsel");
@@ -290,7 +278,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		{
 			Destroy (startHolder.gameObject);
 		}
-		Destroy (_checkButtonScript.gameObject);
+		Destroy (checkButtonScript.gameObject);
 		_startDragList.Clear ();
 		_targetHolderDragList.Clear();
 		_letterList.Clear ();

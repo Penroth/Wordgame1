@@ -26,6 +26,8 @@ public class LetterHolderDragScript : MonoBehaviour
         letter.Holder = this;
     }
 
+
+
     public void ReleaseButton()
     {
         if (TakenLetter != null)
