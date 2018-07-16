@@ -9,7 +9,6 @@ using System.Linq;
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>//, IBeginDragHandler, IDragHandler, IEndDragHandler 
 {
 	//todo: 
-	// poitives und negatives prefab tauschen
 	// hintergrund für buchstaben
 
 
