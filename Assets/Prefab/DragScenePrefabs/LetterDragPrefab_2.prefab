@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114530257100075622}
   - component: {fileID: 225450400778639946}
   m_Layer: 5
-  m_Name: LetterDragPrefab(Clone)
+  m_Name: LetterDragPrefab_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
