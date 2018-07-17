@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System.IO;
+using System.Text;
 
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>//, IBeginDragHandler, IDragHandler, IEndDragHandler 
 {
@@ -76,9 +77,10 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 
 	// Use this for initialization
-	void Start () 
+	void Start ()
 	{
-		PrepareDragScene ();
+	    CreateTextFile();
+        PrepareDragScene ();
 	}
 
 	public void PrepareDragScene()
@@ -175,6 +177,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	public void Check(CheckButtonDragScript button)
 	{
+        BlockAllLetterRaycasts(true);
+
 		WordItem currentWordItem = Words[wordItemCount];
 		string currentWord = currentWordItem.Word;
 
@@ -292,13 +296,31 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 //        firstFreeStartHolder.PlaceButton(letterToStore);
 //    }
 
+    public void CreateTextFile()
+    {
+        string filePath = Application.persistentDataPath + "/bene.csv";
+        StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
+        string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum";
+        writer.WriteLine(firstLine);
+        writer.Close();
+    }
+
 	public void writeToText(string upperWord)
 	{
-		string path = "Assets/Resources/dragResults.txt";
-		string currentTime = System.DateTime.Now.ToString();
-		string wordWithTime = upperWord + " " + currentTime;
-		StreamWriter writer = new StreamWriter(path, true);
+	    string currentTime = System.DateTime.Now.ToString();
+        string filePath = Application.persistentDataPath + "/bene.csv";
+		string wordWithTime = upperWord + "; " + currentTime;
+		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
 		writer.WriteLine(wordWithTime);
 		writer.Close();
 	}
+
+    public void BlockAllLetterRaycasts(bool b)
+    {
+        var allLetters = FindObjectsOfType<LetterTextScript>().ToList();
+        foreach (var letter in allLetters)
+        {
+            letter.GetComponent<CanvasGroup>().blocksRaycasts = !b;
+        }
+    }
 }

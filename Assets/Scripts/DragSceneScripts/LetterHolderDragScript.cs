@@ -18,6 +18,7 @@ public class LetterHolderDragScript : MonoBehaviour
 
         //place letter physically
         letter.GetComponent<RectTransform>().position = this.GetComponent<RectTransform>().position;
+        letter.transform.SetParent(this.transform);
         //adjust attributes
         if (letter.LowerBox != Lower)
         {

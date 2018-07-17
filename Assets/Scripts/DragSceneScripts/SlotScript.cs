@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -18,6 +19,8 @@ public class SlotScript : MonoBehaviour, IDropHandler
         }
     }
 
+    public static bool Swapped = false;
+
     #region IDropHandler implementation
 
     public void OnDrop(PointerEventData eventData)
@@ -33,18 +36,18 @@ public class SlotScript : MonoBehaviour, IDropHandler
         //new holder has already a letter to hold
         else
         {
-			var placedLetter = this.GetComponent<LetterHolderDragScript>().TakenLetter.gameObject;
+            var placedLetter = this.GetComponent<LetterHolderDragScript>().TakenLetter.gameObject;
             var draggingItem = LetterTextScript.itemBeingDragged;
 
-			if (placedLetter.GetComponent<LetterTextScript>().LowerBox == true && draggingItem.GetComponent<LetterTextScript>().LowerBox == true)
+            if (placedLetter.GetComponent<LetterTextScript>().LowerBox == true &&
+                draggingItem.GetComponent<LetterTextScript>().LowerBox == true)
             {
-
                 Debug.Log("beide unten");
             }
             else
             {
-                Debug.Log("swap");
-//                //release both letters from holder, tmp store letter in start to swap correctly
+                Debug.Log("Swap");
+//                //release both letters from holder, tmp store letter in start to Swap correctly
 //                holderOfPlacedLetter.ReleaseButton();
 //                Debug.Log("holder nr " + holderOfPlacedLetter.transform.GetSiblingIndex() + " of " + holderOfPlacedLetter.transform.parent);
 //                TaskControllerDragScript.Instance.TmpPlaceLetterInStart(placedLetter);
@@ -54,25 +57,22 @@ public class SlotScript : MonoBehaviour, IDropHandler
 //                holderOfPlacedLetter.PlaceButton(draggingItem);
 //                placedLetter.Holder.ReleaseButton();
 //                holderOfDraggedItem.PlaceButton(placedLetter);
-				swap(draggingItem, placedLetter);
+                Swap(draggingItem, placedLetter);
             }
         }
-		
-
-
 
 
         //call task controller to enable chk btn with help of lists
-		if (TaskControllerDragScript.Instance.targetDragList.Count == TaskControllerDragScript.Instance.targetDragList.Capacity && TaskControllerDragScript.Instance.targetDragList.Count > 0) 
-		{
-
-			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(true);
-
-		}
-		else
-		{
-			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(false);
-		}
+        if (TaskControllerDragScript.Instance.targetDragList.Count ==
+            TaskControllerDragScript.Instance.targetDragList.Capacity &&
+            TaskControllerDragScript.Instance.targetDragList.Count > 0)
+        {
+            TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(true);
+        }
+        else
+        {
+            TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(false);
+        }
 //		int takenCount = 0;
 //		foreach (var letter in TaskControllerDragScript.Instance._targetHolderDragList) 
 //		{
@@ -92,25 +92,24 @@ public class SlotScript : MonoBehaviour, IDropHandler
 //			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable (false);
 //		}
 //
-
-
     }
 
     #endregion
 
 
-	public void swap(GameObject dragged, GameObject occupier)
-	{
-		Debug.Log ("draggingitem " + dragged.GetComponent<Text>().text);
-		Debug.Log ("placedletter " + occupier.GetComponent<Text>().text);
+    public void Swap(GameObject dragged, GameObject occupier)
+    {
+        Swapped = true;
+        Debug.Log("draggingitem " + dragged.GetComponent<Text>().text);
+        Debug.Log("placedletter " + occupier.GetComponent<Text>().text);
 //		var draggedHolder = dragged.GetComponent<LetterTextScript>().Holder;
 //		var occupiedHolder = occupier.GetComponent<LetterTextScript>().Holder;
 
-		var draggedLetter = dragged.GetComponent<LetterTextScript> ().GetComponent<Text> ().text;
-		dragged.GetComponent<Text> ().text = occupier.GetComponent<Text> ().text;
-		occupier.GetComponent<Text> ().text = draggedLetter;
+        var draggedLetter = dragged.GetComponent<LetterTextScript>().GetComponent<Text>().text;
+        dragged.GetComponent<Text>().text = occupier.GetComponent<Text>().text;
+        occupier.GetComponent<Text>().text = draggedLetter;
 
-		//occupier.GetComponent<LetterHolderDragScript> ().ReleaseButton ();
+        //occupier.GetComponent<LetterHolderDragScript> ().ReleaseButton ();
 //		occupier.GetComponentInParent<RectTransform> ().position = posOfDraggedParent;
 //		occupier.GetComponent<LetterTextScript> ().Holder = draggedHolder;
 //		occupier.transform.SetParent (transform);
@@ -127,11 +126,5 @@ public class SlotScript : MonoBehaviour, IDropHandler
 //		l1.GetComponent<LetterTextScript> ().Holder = secondHolder;
 //		l1.transform.SetParent(transform);
 //
-
-
-
-
-
-	}
-
+    }
 }
