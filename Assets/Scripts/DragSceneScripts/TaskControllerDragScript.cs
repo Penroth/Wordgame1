@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.IO;
 
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>//, IBeginDragHandler, IDragHandler, IEndDragHandler 
 {
@@ -184,6 +185,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			var upperChar = upperLetter.GetComponentInChildren<Text>().text;
 			upperWord = upperWord + upperChar;
 		}
+		writeToText (upperWord);
 
 		if (currentWord.Equals(upperWord) ) {
 			//switch scene if list is empty, counter is out of bounds
@@ -284,9 +286,19 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		_startHolderDragList.Clear ();
 	}
 
-    public void TmpPlaceLetterInStart(LetterTextScript letterToStore)
-    {
-        var firstFreeStartHolder = (from letter in _startHolderDragList where !letter.IsTaken select letter).FirstOrDefault();
-        firstFreeStartHolder.PlaceButton(letterToStore);
-    }
+//    public void TmpPlaceLetterInStart(LetterTextScript letterToStore)
+//    {
+//        var firstFreeStartHolder = (from letter in _startHolderDragList where !letter.IsTaken select letter).FirstOrDefault();
+//        firstFreeStartHolder.PlaceButton(letterToStore);
+//    }
+
+	public void writeToText(string upperWord)
+	{
+		string path = "Assets/Resources/dragResults.txt";
+		string currentTime = System.DateTime.Now.ToString();
+		string wordWithTime = upperWord + " " + currentTime;
+		StreamWriter writer = new StreamWriter(path, true);
+		writer.WriteLine(wordWithTime);
+		writer.Close();
+	}
 }

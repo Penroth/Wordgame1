@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 
 public class TaskController : MonoBehaviourSingleton<TaskController>
@@ -253,6 +254,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 			var upperButtonChar = upperLetter.TakenLetter.LetterCharacter.text;
 			upperWord = upperWord + upperButtonChar;
 		}
+
+		writeToText (upperWord);
 		foreach (var lowerLetter in _letterList) 
 		{
 			if (!lowerLetter.IsDistractor) 
@@ -359,6 +362,16 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	}
 
+	public void writeToText(string upperWord)
+	{
+		string path = "Assets/Resources/clickResults.txt";
+		string currentTime = System.DateTime.Now.ToString();
+		string wordWithTime = upperWord + " " + currentTime;
+		StreamWriter writer = new StreamWriter(path, true);
+		writer.WriteLine(wordWithTime);
+		writer.Close();
+
+	}
 
 
     /*
