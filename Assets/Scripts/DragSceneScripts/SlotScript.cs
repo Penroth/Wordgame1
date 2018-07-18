@@ -100,14 +100,14 @@ public class SlotScript : MonoBehaviour, IDropHandler
     public void Swap(GameObject dragged, GameObject occupier)
     {
         Swapped = true;
-        Debug.Log("draggingitem " + dragged.GetComponent<Text>().text);
-        Debug.Log("placedletter " + occupier.GetComponent<Text>().text);
+        Debug.Log("draggingitem " + dragged.GetComponentInChildren<Text>().text);
+        Debug.Log("placedletter " + occupier.GetComponentInChildren<Text>().text);
 //		var draggedHolder = dragged.GetComponent<LetterTextScript>().Holder;
 //		var occupiedHolder = occupier.GetComponent<LetterTextScript>().Holder;
 
-        var draggedLetter = dragged.GetComponent<LetterTextScript>().GetComponent<Text>().text;
-        dragged.GetComponent<Text>().text = occupier.GetComponent<Text>().text;
-        occupier.GetComponent<Text>().text = draggedLetter;
+        var draggedLetter = dragged.GetComponentInChildren<LetterTextScript>().GetComponentInChildren<Text>().text;
+        dragged.GetComponentInChildren<Text>().text = occupier.GetComponentInChildren<Text>().text;
+        occupier.GetComponentInChildren<Text>().text = draggedLetter;
 
         //occupier.GetComponent<LetterHolderDragScript> ().ReleaseButton ();
 //		occupier.GetComponentInParent<RectTransform> ().position = posOfDraggedParent;

@@ -10,4 +10,9 @@ public class ClickButtonScript : MonoBehaviour {
 		Debug.Log ("onbuttonclick clickscript");
 		TaskControllerSartScene.Instance.ClickOnClick ();
 	}
+
+	public void SetInteractable(bool b)
+	{
+		this.GetComponent<Button>().interactable = b;
+	}
 }

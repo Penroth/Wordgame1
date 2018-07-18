@@ -16,4 +16,9 @@ public class LetterButtonScript : MonoBehaviour {
         //call weiter geben
         TaskController.Instance.LetterButtonGetsClicked(this);
 	}
+
+	public void SetInteractable(bool b)
+	{
+		this.GetComponent<Button>().interactable = b;
+	}
 }

@@ -61,7 +61,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     }
 
 	//list with the letters in the upperbox
-    private List<LetterButtonScript> _targetuttonList
+    private List<LetterButtonScript> _targetButtonList
     {
         get
         {
@@ -215,11 +215,13 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
 
         //check if upper box is full, if so set check interactable
-		if (_targetHolderList.Last<LetterHolderScript> ().IsTaken) 
-		{
-			_checkButtonScript.SetInteractable(true);
+		if (_targetHolderList.Last<LetterHolderScript> ().IsTaken) {
+			_checkButtonScript.SetInteractable (true);
+			//sets all letter buttons to not interactable
+			_letterList.ForEach(letter => letter.SetInteractable(false));
 
-		}
+		} 
+
 		if (_targetHolderList.First<LetterHolderScript> ().IsTaken) 
 		{
 			_releaseButtonScript.SetInteractableRelease (true);
@@ -238,6 +240,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	    {
 	        _releaseButtonScript.SetInteractableRelease(false);
 	    }
+		//sets all letter buttons to interactable again
+		_letterList.ForEach(letter => letter.SetInteractable(true));
     }
 
 
@@ -247,8 +251,12 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//count of all Worditems for scene switch once all words are done
 		int wordItemMax = Words.Capacity;
 
+		WordItem currentWordItem = Words[wordItemCount];
+		string currentWord = currentWordItem.Word;
+
+
 		var upperWord = "";
-		var lowerWord = "";
+
 		foreach (var upperLetter in _targetHolderList) 
 		{
 			var upperButtonChar = upperLetter.TakenLetter.LetterCharacter.text;
@@ -256,17 +264,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		}
 
 		writeToText (upperWord);
-		foreach (var lowerLetter in _letterList) 
-		{
-			if (!lowerLetter.IsDistractor) 
-			{
-				var lowerButtonChar = lowerLetter.LetterCharacter.text;
-				lowerWord = lowerWord + lowerButtonChar;
-			}
-
-		}
-
-		if (lowerWord.Equals(upperWord) ) {
+		if (currentWord.Equals(upperWord) ) {
 			//switch scene if list is empty, counter is out of bounds
 			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol

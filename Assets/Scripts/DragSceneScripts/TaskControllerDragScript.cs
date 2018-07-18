@@ -108,7 +108,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			var letterScript = letterDrag.GetComponent<LetterTextScript>();
 		    letterScript.Holder = holderDragScript;
 			//set textvalue to distractor char
-			letterScript.GetComponent<Text>().text= distractorStr;
+			letterScript.GetComponentInChildren<Text>().text= distractorStr;
 			//set button to the lower box and to a disctractor
 			letterScript.LowerBox = true;
 			letterScript.IsDistractor = true;
@@ -136,7 +136,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		    letterScript.Holder = holderDragScript;
 
             //set textvalue of button to wordletter char
-            letterScript.GetComponent<Text>().text = letterChar.ToString();
+            letterScript.GetComponentInChildren<Text>().text = letterChar.ToString();
 			//set button to lower box and to not a distractor
 			letterScript.LowerBox = true;
 			letterScript.IsDistractor = false;
@@ -183,7 +183,6 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		string currentWord = currentWordItem.Word;
 
 		var upperWord = "";
-		var lowerWord = "";
 		foreach (var upperLetter in _targetHolderDragList) 
 		{
 			var upperChar = upperLetter.GetComponentInChildren<Text>().text;
@@ -192,18 +191,13 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		writeToText (upperWord);
 
 		if (currentWord.Equals(upperWord) ) {
-			//switch scene if list is empty, counter is out of bounds
 			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol
-
-			Debug.Log ("passt");
 			StartCoroutine(ShowPositiveDragFeedback());
 
 
 
 		} else {
-			Debug.Log (upperWord);
-			Debug.Log (lowerWord);
 			//show wrong symbol
 			StartCoroutine(ShowNegativeFeedbackDrag());
 		}
@@ -224,6 +218,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//step 4 
 		//set check and release interactable again
 		checkButtonScript.SetInteractable(true);
+		//step 5
+		//make buttons dragable again
+		BlockAllLetterRaycasts(false);
 
 	}
 
