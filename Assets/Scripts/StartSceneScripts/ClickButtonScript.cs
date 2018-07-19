@@ -7,7 +7,6 @@ public class ClickButtonScript : MonoBehaviour {
 
 	public void OnClickButtonClick()
 	{
-		Debug.Log ("onbuttonclick clickscript");
 		TaskControllerSartScene.Instance.ClickOnClick ();
 	}
 

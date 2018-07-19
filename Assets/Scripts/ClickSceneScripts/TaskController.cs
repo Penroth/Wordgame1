@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
+using System.Text;
 
 
 public class TaskController : MonoBehaviourSingleton<TaskController>
@@ -83,6 +84,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//for choosing a WordItem
 	public int wordItemCount = 0;
 
+	public string childName = TaskControllerSartScene.Instance.nameInput;
+	public string miscInput = TaskControllerSartScene.Instance.miscInput;
 
     void Start()
     {
@@ -362,10 +365,13 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	public void writeToText(string upperWord)
 	{
-		string path = "Assets/Resources/clickResults.txt";
+		WordItem currentWordItem = Words[wordItemCount];
+		string currentWord = currentWordItem.Word;
 		string currentTime = System.DateTime.Now.ToString();
-		string wordWithTime = upperWord + " " + currentTime;
-		StreamWriter writer = new StreamWriter(path, true);
+
+		string filePath = Application.persistentDataPath + "/"+ childName + "Click" + miscInput + ".csv";
+		string wordWithTime = currentWord + "; " + upperWord + "; " + currentTime;
+		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
 		writer.WriteLine(wordWithTime);
 		writer.Close();
 

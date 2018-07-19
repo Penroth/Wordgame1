@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
+using System.Text;
 
 public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSartScene> {
 	//Click Box
@@ -14,19 +16,14 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 	public GameObject DragBox;
 	//Drag and Drop Button
 	public GameObject DragButtonPrefab;
-
-	//box for Righthanded Checkbox
-	public GameObject RightHandedBox;
-	//box for Righthanded Checkbox
-	public GameObject RightHanded;
-	//box for Lefthanded Checkbox
-	public GameObject LeftHandedBox;
-	//left handed checkbox
-	public GameObject LeftHanded;
+	//Left- or Righthanded Box
+	public GameObject HandedBox;
+	//Left- or Righthanded Dropdown
+	public Dropdown HandedPrefab;
 	//box for Gender Dropdown
 	public GameObject GenderBox;
 	//Gender Dropdown
-	public GameObject GenderDropDown;
+	public Dropdown GenderPrefab;
 	//name input field box
 	public GameObject NameBox;
 	//name input field
@@ -45,15 +42,26 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 	private ClickButtonScript _clickButtonScript;
 	private DragButtonScript _dragButtonScript;
 	private GenderDropDownScript _genderDropScript;
-	private RightAndLeftHandedScript _RightLeftScript;
-	private InputFieldScript _InputScript;
+	private HandedScript _handedScript;
+	private InputFieldScript _inputScript;
+
+
+	public string nameInput = "";
+	public int ageInput = 0;
+	public string miscInput = "";
+	public string whichHand = "Rechtshänder";
+	public string gender = "Männlich";
+
 
 	// Use this for initialization
 	void Start () {
 		PrepareStartScene ();
 	}
 	
-
+	void Update()
+	{
+		checkIfNothingIsEmpty ();
+	}
 
 	public void PrepareStartScene()
 	{
@@ -65,36 +73,76 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 		_dragButtonScript = DragButtonGo.GetComponent<DragButtonScript> ();
 		_dragButtonScript.SetInteractable (false);
 
-		var GenderDropGo = Instantiate (GenderDropDown, GenderBox.transform);
+		var GenderDropGo = Instantiate (GenderPrefab, GenderBox.transform);
 		_genderDropScript = GenderDropGo.GetComponent<GenderDropDownScript> ();
 
-		var RightGo = Instantiate (RightHanded, RightHandedBox.transform);
-		_RightLeftScript = RightGo.GetComponent<RightAndLeftHandedScript> ();
+		var HandedGo = Instantiate (HandedPrefab, HandedBox.transform);
+		_handedScript = HandedGo.GetComponent<HandedScript> ();
 
-		var LeftGo = Instantiate (LeftHanded, LeftHandedBox.transform);
-		_RightLeftScript = LeftGo.GetComponent<RightAndLeftHandedScript> ();
+		HandedPrefab = GetComponent<Dropdown> ();
 
 		var NameGo = Instantiate (NameField, NameBox.transform);
-		_InputScript = NameGo.GetComponent<InputFieldScript> ();;
+		_inputScript = NameGo.GetComponent<InputFieldScript> ();;
 
 		var AgeGo = Instantiate (AgeField, AgeBox.transform);
-		_InputScript = AgeGo.GetComponent<InputFieldScript> ();;
+		_inputScript = AgeGo.GetComponent<InputFieldScript> ();;
 
 		var MiscGo = Instantiate (MiscField, MiscBox.transform);
-		_InputScript = MiscGo.GetComponent<InputFieldScript> ();
+		_inputScript = MiscGo.GetComponent<InputFieldScript> ();
 
+	
+	}
 
+	public void checkIfNothingIsEmpty()
+	{
+		if (nameInput != "" && miscInput != "" && ageInput != 0) 
+		{
+			_clickButtonScript.SetInteractable (true);
+			_dragButtonScript.SetInteractable (true);
+		}
+	}
+
+	public void HandedSwitch()
+	{
+		string hand = _handedScript.GetComponent<Dropdown> ().captionText.text.ToString ();
+//		_handedScript.GetComponent<Dropdown> ().onValueChanged.AddListener (delegate {
+//			_handedScript.GetComponent<Dropdown> ().captionText.ToString ();
+//		});
+		//hand = _handedScript.GetComponent<Dropdown> ().captionText.ToString ();
+		Debug.Log(hand);
+		whichHand = hand;
+		Debug.Log(whichHand + " welche Hand");
+	}
+
+	public void GenderSwitch ()
+	{
+		string genderChanged = _genderDropScript.GetComponent<Dropdown> ().captionText.text.ToString ();
+		Debug.Log (genderChanged);
+		gender = genderChanged;
+		Debug.Log (gender);
+
+	}
+
+	public void CreateFile (string clickOrDrag)
+	{
+		string filePath = Application.persistentDataPath + "/"+ nameInput + clickOrDrag + miscInput + ".csv";
+		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
+		string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum" + "; " + "Alter: " + ageInput.ToString ();
+		writer.WriteLine(firstLine);
+		writer.Close();
 	}
 
 	public void ClickOnClick()
 	{
 		Debug.Log ("click in task");
+		CreateFile ("Click");
 		SceneManager.LoadScene ("ClickScene");
 	}
 
 	public void DragOnClick()
 	{
 		Debug.Log ("drag in task");
+		CreateFile ("Drag");
 		SceneManager.LoadScene ("DragScene");
 	}
 }

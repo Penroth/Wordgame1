@@ -71,6 +71,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	}
 
 
+	public string childName = TaskControllerSartScene.Instance.nameInput;
+	public string miscInput = TaskControllerSartScene.Instance.miscInput;
 
 	//for choosing a WordItem
 	public int wordItemCount = 0;
@@ -79,7 +81,6 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	// Use this for initialization
 	void Start ()
 	{
-	    CreateTextFile();
         PrepareDragScene ();
 	}
 
@@ -293,20 +294,23 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 //        firstFreeStartHolder.PlaceButton(letterToStore);
 //    }
 
-    public void CreateTextFile()
-    {
-        string filePath = Application.persistentDataPath + "/bene.csv";
-        StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
-        string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum";
-        writer.WriteLine(firstLine);
-        writer.Close();
-    }
+//    public void CreateTextFile()
+//    {
+//        string filePath = Application.persistentDataPath + "/bene.csv";
+//        StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
+//        string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum";
+//        writer.WriteLine(firstLine);
+//        writer.Close();
+//    }
 
 	public void writeToText(string upperWord)
 	{
+		WordItem currentWordItem = Words[wordItemCount];
+		string currentWord = currentWordItem.Word;
 	    string currentTime = System.DateTime.Now.ToString();
-        string filePath = Application.persistentDataPath + "/bene.csv";
-		string wordWithTime = upperWord + "; " + currentTime;
+
+		string filePath = Application.persistentDataPath + "/"+ childName + "Drag" + miscInput + ".csv";
+		string wordWithTime = currentWord + "; " + upperWord + "; " + currentTime;
 		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
 		writer.WriteLine(wordWithTime);
 		writer.Close();
