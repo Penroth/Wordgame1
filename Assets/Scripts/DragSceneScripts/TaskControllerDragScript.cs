@@ -38,7 +38,10 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public GameObject RedXBox;
 	//red X for wrong answers
 	public GameObject RedXPrefab;
-
+	//Finish Button Box for test Purposes
+	public GameObject FinishBox;
+	//Finish Button for test Purposes
+	public GameObject FinishPrefab;
 	//list for upperletters 
 	public List<LetterHolderDragScript> _targetHolderDragList = new List<LetterHolderDragScript>();
 	//list for lower letters
@@ -47,6 +50,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public List <LetterTextScript> _letterList = new List <LetterTextScript>();
 
 	public CheckButtonDragScript checkButtonScript;
+	private FinishDragScript _finishDragScript;
 
 	//pushes letters from startbox to a list
 	private List<LetterTextScript> _startDragList
@@ -70,7 +74,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		}
 	}
 
-
+	//username and miscstring for .csv file opening
 	public string childName = TaskControllerSartScene.Instance.nameInput;
 	public string miscInput = TaskControllerSartScene.Instance.miscInput;
 
@@ -93,6 +97,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		var checkButtonDrag = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
 		checkButtonScript = checkButtonDrag.GetComponent<CheckButtonDragScript>();
 		checkButtonScript.SetInteractable(false);
+
+		var finishButtonGo = Instantiate (FinishPrefab, FinishBox.transform);
+		_finishDragScript = finishButtonGo.GetComponent<FinishDragScript> ();
 
 
 
@@ -254,12 +261,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		{
 			PrepareDragScene();
 		}
-
-
 	}
-
-
-
+		
 	public void CleanupScene()
 	{
 		//counter increase
@@ -324,4 +327,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
             letter.GetComponent<CanvasGroup>().blocksRaycasts = !b;
         }
     }
+
+	public void Finish()
+	{
+		
+	}
 }

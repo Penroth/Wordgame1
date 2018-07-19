@@ -22,8 +22,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public GameObject CheckBox;
 	//check button
 	public GameObject CheckButtonPrefab;
-	private CheckButtonScript _checkButtonScript;
-	private ReleaseButtonScript _releaseButtonScript;
 	//list of words to work with
     public List<WordItem> Words;
 	//greencheckBox for positioning 
@@ -38,7 +36,14 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public GameObject ReleaseButtonBox;
 	//release button
 	public GameObject ReleaseButtonPrefab;
+	//finish button box for testing purposes
+	public GameObject FinishBox;
+	//finish button for testing
+	public GameObject FinishButton;
 
+	private CheckButtonScript _checkButtonScript;
+	private ReleaseButtonScript _releaseButtonScript;
+	private FinishClickScript _finishClickScript;
 
 
 	//create list for upperletterbox
@@ -114,6 +119,10 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		var releaseButtonGo = Instantiate(ReleaseButtonPrefab, ReleaseButtonBox.transform) as GameObject;
         _releaseButtonScript = releaseButtonGo.GetComponent<ReleaseButtonScript>();
         _releaseButtonScript.SetInteractableRelease(false);
+
+		//instantiate finish button 
+		var finishButtonGo = Instantiate(FinishButton, FinishBox.transform);
+		_finishClickScript = finishButtonGo.GetComponent<FinishClickScript>();
 
 
 
@@ -375,6 +384,11 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		writer.WriteLine(wordWithTime);
 		writer.Close();
 
+	}
+
+	public void Finish()
+	{
+		//Push correct buttons to top
 	}
 
 
