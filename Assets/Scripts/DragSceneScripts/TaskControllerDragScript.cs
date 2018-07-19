@@ -48,6 +48,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public List<LetterHolderDragScript> _startHolderDragList = new List<LetterHolderDragScript>();
 	//list for all letters (distractors + wordletters)
 	public List <LetterTextScript> _letterList = new List <LetterTextScript>();
+	//list for true letters for finish function (testing purpose)
+	public List <LetterTextScript> _trueLetters = new List <LetterTextScript>();
+
 
 	public CheckButtonDragScript checkButtonScript;
 	private FinishDragScript _finishDragScript;
@@ -150,6 +153,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			letterScript.IsDistractor = false;
 			//add letter to letterlist
 			_letterList.Add(letterDrag.GetComponent<LetterTextScript>());
+			//push true letters to list for finish function
+			_trueLetters.Add(letterDrag.GetComponent<LetterTextScript>());
             //set buttonposition to occupied in lower box
 		    holderDragScript.IsTaken = true;
             //? ## same as above, but with the correctButtonLetter
@@ -285,10 +290,12 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			Destroy (startHolder.gameObject);
 		}
 		Destroy (checkButtonScript.gameObject);
+		Destroy (_finishDragScript.gameObject);
 		_startDragList.Clear ();
 		_targetHolderDragList.Clear();
 		_letterList.Clear ();
 		_startHolderDragList.Clear ();
+		_trueLetters.Clear ();
 	}
 
 //    public void TmpPlaceLetterInStart(LetterTextScript letterToStore)
@@ -330,6 +337,13 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	public void Finish()
 	{
-		
+		//Push correct buttons to top
+		foreach (var letters in _trueLetters) 
+		{
+			var firstFreeTargetButton = _targetHolderDragList.FirstOrDefault(letter => !letter.IsTaken);
+			firstFreeTargetButton.PlaceButton(letters);
+			checkButtonScript.SetInteractable (true);
+			//_releaseButtonScript.SetInteractableRelease (true);
+		}
 	}
 }

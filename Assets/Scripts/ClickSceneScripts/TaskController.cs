@@ -55,6 +55,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//create List for all letters (distractors + wordletters)
     public List<LetterButtonScript> _letterList = new List<LetterButtonScript>();
 
+	//create List for all letters (distractors + wordletters)
+	public List<LetterButtonScript> _trueLetters = new List<LetterButtonScript>();
+
 	//pushes letters from startbox to a list
     private List<LetterButtonScript> _startButtonList
     {
@@ -165,6 +168,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             letterScript.IsDistractor = false;
 			//add letter to letterlist
             _letterList.Add(letterGo.GetComponent<LetterButtonScript>());
+			//fill list with only true letters for finish function
+			_trueLetters.Add(letterGo.GetComponent<LetterButtonScript>());
 			//set buttonposition to occupied in lower box
             holderGo.GetComponent<LetterHolderScript>().IsTaken = true;
 			//? ## same as above, but with the correctButtonLetter
@@ -314,6 +319,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		}
 		Destroy (_checkButtonScript.gameObject);
 		Destroy (_releaseButtonScript.gameObject);
+		Destroy (_finishClickScript.gameObject);
+		_trueLetters.Clear ();
 		_startButtonList.Clear ();
         _targetHolderList.Clear();
 		_letterList.Clear ();
@@ -389,6 +396,13 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public void Finish()
 	{
 		//Push correct buttons to top
+		foreach (var letters in _trueLetters) 
+		{
+			var firstFreeTargetButton = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
+			firstFreeTargetButton.PlaceButton(letters);
+			_checkButtonScript.SetInteractable (true);
+			//_releaseButtonScript.SetInteractableRelease (true);
+		}
 	}
 
 
