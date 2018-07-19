@@ -49,7 +49,7 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 	public string nameInput = "";
 	public int ageInput = 0;
 	public string miscInput = "";
-	public string whichHand = "Rechtshänder";
+	public string handed = "Rechsthänder";
 	public string gender = "Männlich";
 
 
@@ -79,8 +79,6 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 		var HandedGo = Instantiate (HandedPrefab, HandedBox.transform);
 		_handedScript = HandedGo.GetComponent<HandedScript> ();
 
-		HandedPrefab = GetComponent<Dropdown> ();
-
 		var NameGo = Instantiate (NameField, NameBox.transform);
 		_inputScript = NameGo.GetComponent<InputFieldScript> ();;
 
@@ -89,6 +87,9 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 
 		var MiscGo = Instantiate (MiscField, MiscBox.transform);
 		_inputScript = MiscGo.GetComponent<InputFieldScript> ();
+
+		Debug.Log (handed + "in preparescene");
+		Debug.Log (gender + "gender in preparescene");
 
 	
 	}
@@ -110,8 +111,8 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 //		});
 		//hand = _handedScript.GetComponent<Dropdown> ().captionText.ToString ();
 		Debug.Log(hand);
-		whichHand = hand;
-		Debug.Log(whichHand + " welche Hand");
+		handed = hand;
+		Debug.Log(handed + " welche Hand");
 	}
 
 	public void GenderSwitch ()
@@ -127,7 +128,7 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 	{
 		string filePath = Application.persistentDataPath + "/"+ nameInput + clickOrDrag + miscInput + ".csv";
 		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
-		string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum" + "; " + "Alter: " + ageInput.ToString ();
+		string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum" + "; " + "Alter: " + ageInput.ToString () + "; " + handed + "; " + gender;
 		writer.WriteLine(firstLine);
 		writer.Close();
 	}
