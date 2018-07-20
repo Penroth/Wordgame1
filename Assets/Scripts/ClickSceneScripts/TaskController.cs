@@ -97,8 +97,20 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	//for choosing a WordItem
 	public int wordItemCount = 0;
 
-	public string childName = TaskControllerSartScene.Instance.nameInput;
-	public string miscInput = TaskControllerSartScene.Instance.miscInput;
+	public string childName 
+	{
+		get 
+		{
+			return (TaskControllerStartScene.nameInput);
+		}
+	}
+	public string miscInput 
+	{ 
+		get 
+		{ 
+			return (TaskControllerStartScene.miscInput); 
+		} 
+	}
 
     void Start()
     {
@@ -209,6 +221,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
 
         #endregion
+
+		Debug.Log (childName + " " + miscInput);
 
     }
 

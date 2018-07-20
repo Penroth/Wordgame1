@@ -7,7 +7,7 @@ public class ClickButtonScript : MonoBehaviour {
 
 	public void OnClickButtonClick()
 	{
-		TaskControllerSartScene.Instance.ClickOnClick ();
+		TaskControllerStartScene.Instance.ClickOnClick ();
 	}
 
 	public void SetInteractable(bool b)

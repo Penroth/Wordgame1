@@ -8,20 +8,20 @@ public class InputFieldScript : MonoBehaviour {
 
 	public void GetInputName(string name)
 	{
-		TaskControllerSartScene.Instance.nameInput = name;
+		TaskControllerStartScene.nameInput = name;
 		Debug.Log (name);
 	}
 		
 	public void GetInputAge(string ageString)
 	{
 		int age = int.Parse (ageString);
-		TaskControllerSartScene.Instance.ageInput = age;
+		TaskControllerStartScene.Instance.ageInput = age;
 		Debug.Log (age);
 	}
 
 	public void GetInputMisc(string misc)
 	{
-		TaskControllerSartScene.Instance.miscInput = misc;
+		TaskControllerStartScene.miscInput = misc;
 		Debug.Log (misc);
 	}
 }

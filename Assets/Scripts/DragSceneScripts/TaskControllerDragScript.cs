@@ -8,7 +8,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 
-public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>//, IBeginDragHandler, IDragHandler, IEndDragHandler 
+public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>
 {
 	//todo: 
 	// hintergrund für buchstaben
@@ -83,8 +83,20 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	}
 
 	//username and miscstring for .csv file opening
-	public string childName = TaskControllerSartScene.Instance.nameInput;
-	public string miscInput = TaskControllerSartScene.Instance.miscInput;
+	public string childName 
+	{ 
+		get 
+		{
+			return (TaskControllerStartScene.nameInput);
+		}
+	}
+	public string miscInput 
+	{ 
+		get 
+		{ 
+			return (TaskControllerStartScene.miscInput); 
+		} 
+	}
 
 	//for choosing a WordItem
 	public int wordItemCount = 0;
@@ -191,11 +203,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			//add an entry in the upperbox list
 			_targetHolderDragList.Add(targetDrag);
 		}
+		Debug.Log (childName + " " + miscInput);
 
-//		if (UpperBox.GetComponentInChildren<LetterHolderDragScript> ().IsTaken = true) 
-//		{
-//			_checkButtonScript.SetInteractable (true);
-//		}
 	}
 
 	public void Check(CheckButtonDragScript button)

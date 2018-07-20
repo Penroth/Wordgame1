@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.IO;
 using System.Text;
 
-public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSartScene> {
+public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerStartScene> {
 	//Click Box
 	public GameObject ClickBox;
 	//Click Buttom
@@ -46,9 +46,9 @@ public class TaskControllerSartScene : MonoBehaviourSingleton<TaskControllerSart
 	private InputFieldScript _inputScript;
 
 
-	public string nameInput = "";
+	public static string nameInput = "";
 	public int ageInput = 0;
-	public string miscInput = "";
+	public static string miscInput = "";
 	public string handed = "Rechsthänder";
 	public string gender = "Männlich";
 

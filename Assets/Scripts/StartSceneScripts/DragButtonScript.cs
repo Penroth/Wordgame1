@@ -8,7 +8,7 @@ public class DragButtonScript : MonoBehaviour {
 	public void OnDragButtonClick()
 	{
 		Debug.Log ("onbuttonclick dragscript");
-		TaskControllerSartScene.Instance.DragOnClick ();
+		TaskControllerStartScene.Instance.DragOnClick ();
 	}
 
 	public void SetInteractable(bool b)

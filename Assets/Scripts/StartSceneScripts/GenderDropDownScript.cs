@@ -8,6 +8,6 @@ public class GenderDropDownScript : MonoBehaviour {
 
 	public void GenderChanged()
 	{
-		TaskControllerSartScene.Instance.GenderSwitch ();
+		TaskControllerStartScene.Instance.GenderSwitch ();
 	}
 }

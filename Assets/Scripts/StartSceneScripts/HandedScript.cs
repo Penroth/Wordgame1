@@ -10,7 +10,7 @@ public class HandedScript : MonoBehaviour {
 	{
 		//string hand = this.gameObject.GetComponent<Dropdown> ().captionText.text.ToString();
 		//Debug.Log (hand + "handedscript");
-		TaskControllerSartScene.Instance.HandedSwitch();
+		TaskControllerStartScene.Instance.HandedSwitch();
 	}
 
 }
