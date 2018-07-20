@@ -42,6 +42,10 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public GameObject FinishBox;
 	//Finish Button for test Purposes
 	public GameObject FinishPrefab;
+	//menu button box
+	public GameObject MenuButtonBox;
+	//menu button
+	public GameObject MenuButton;
 	//list for upperletters 
 	public List<LetterHolderDragScript> _targetHolderDragList = new List<LetterHolderDragScript>();
 	//list for lower letters
@@ -54,6 +58,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	public CheckButtonDragScript checkButtonScript;
 	private FinishDragScript _finishDragScript;
+	private MenuButtonDragScript _menuButtonDragScript;
 
 	//pushes letters from startbox to a list
 	private List<LetterTextScript> _startDragList
@@ -101,8 +106,13 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		checkButtonScript = checkButtonDrag.GetComponent<CheckButtonDragScript>();
 		checkButtonScript.SetInteractable(false);
 
+		//instantiate finish button
 		var finishButtonGo = Instantiate (FinishPrefab, FinishBox.transform);
 		_finishDragScript = finishButtonGo.GetComponent<FinishDragScript> ();
+
+		//instantiate menu button
+		var menuButtonGo = Instantiate(MenuButton, MenuButtonBox.transform);
+		_menuButtonDragScript = menuButtonGo.GetComponent<MenuButtonDragScript>();
 
 
 
@@ -291,6 +301,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		}
 		Destroy (checkButtonScript.gameObject);
 		Destroy (_finishDragScript.gameObject);
+		Destroy (_menuButtonDragScript.gameObject);
 		_startDragList.Clear ();
 		_targetHolderDragList.Clear();
 		_letterList.Clear ();
@@ -345,5 +356,10 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			checkButtonScript.SetInteractable (true);
 			//_releaseButtonScript.SetInteractableRelease (true);
 		}
+	}
+
+	public void BackToMenu()
+	{
+		SceneManager.LoadScene ("StartScene");
 	}
 }

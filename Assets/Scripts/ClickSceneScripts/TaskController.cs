@@ -40,10 +40,15 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public GameObject FinishBox;
 	//finish button for testing
 	public GameObject FinishButton;
+	//menu button box
+	public GameObject MenuButtonBox;
+	//menu button
+	public GameObject MenuButton;
 
 	private CheckButtonScript _checkButtonScript;
 	private ReleaseButtonScript _releaseButtonScript;
 	private FinishClickScript _finishClickScript;
+	private MenuButtonClickScript _menuButtonScript;
 
 
 	//create list for upperletterbox
@@ -127,6 +132,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		var finishButtonGo = Instantiate(FinishButton, FinishBox.transform);
 		_finishClickScript = finishButtonGo.GetComponent<FinishClickScript>();
 
+		//instantiate menu button
+		var menuButtonGo = Instantiate(MenuButton, MenuButtonBox.transform);
+		_menuButtonScript = menuButtonGo.GetComponent<MenuButtonClickScript>();
 
 
         //instantiate distractor buttons and add them to the lowerboxlist
@@ -320,6 +328,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		Destroy (_checkButtonScript.gameObject);
 		Destroy (_releaseButtonScript.gameObject);
 		Destroy (_finishClickScript.gameObject);
+		Destroy (_menuButtonScript.gameObject);
 		_trueLetters.Clear ();
 		_startButtonList.Clear ();
         _targetHolderList.Clear();
@@ -403,6 +412,11 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 			_checkButtonScript.SetInteractable (true);
 			//_releaseButtonScript.SetInteractableRelease (true);
 		}
+	}
+
+	public void BackToMenu()
+	{
+		SceneManager.LoadScene ("StartScene");
 	}
 
 
