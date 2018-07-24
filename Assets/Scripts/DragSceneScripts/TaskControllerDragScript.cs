@@ -49,13 +49,13 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	//menu button
 	public GameObject MenuButton;
 	//list for upperletters 
-	public List<LetterHolderDragScript> _targetHolderDragList = new List<LetterHolderDragScript>();
+	public List<LetterHolderDragScript> targetHolderDragList = new List<LetterHolderDragScript>();
 	//list for lower letters
 	public List<LetterHolderDragScript> _startHolderDragList = new List<LetterHolderDragScript>();
 	//list for all letters (distractors + wordletters)
 	public List <LetterTextScript> _letterList = new List <LetterTextScript>();
 	//list for true letters for finish function (testing purpose)
-	public List <LetterTextScript> _trueLetters = new List <LetterTextScript>();
+	public List <LetterTextScript> trueLetters = new List <LetterTextScript>();
 
 
 	public CheckButtonDragScript checkButtonScript;
@@ -84,19 +84,11 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		}
 	}
 
-	//username and miscstring for .csv file opening
-	public string childName 
-	{ 
-		get 
-		{
-			return (TaskControllerStartScene.nameInput);
-		}
-	}
-	public string miscInput 
+	public string filepath 
 	{ 
 		get 
 		{ 
-			return (TaskControllerStartScene.miscInput); 
+			return (TaskControllerStartScene.filepath); 
 		} 
 	}
 
@@ -178,7 +170,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			//add letter to letterlist
 			_letterList.Add(letterDrag.GetComponent<LetterTextScript>());
 			//push true letters to list for finish function
-			_trueLetters.Add(letterDrag.GetComponent<LetterTextScript>());
+			trueLetters.Add(letterDrag.GetComponent<LetterTextScript>());
             //set buttonposition to occupied in lower box
 		    holderDragScript.IsTaken = true;
             //? ## same as above, but with the correctButtonLetter
@@ -203,10 +195,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
             //sets the empty box to not yet occupied
             targetDrag.IsTaken = false;
 			//add an entry in the upperbox list
-			_targetHolderDragList.Add(targetDrag);
+			targetHolderDragList.Add(targetDrag);
 		}
-		Debug.Log (childName + " " + miscInput);
-
 	}
 
 	public void Check(CheckButtonDragScript button)
@@ -217,7 +207,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		string currentWord = currentWordItem.Word;
 
 		var upperWord = "";
-		foreach (var upperLetter in _targetHolderDragList) 
+		foreach (var upperLetter in targetHolderDragList) 
 		{
 			var upperChar = upperLetter.GetComponentInChildren<Text>().text;
 			upperWord = upperWord + upperChar;
@@ -294,7 +284,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//counter increase
 		wordItemCount++;
 		//children gameobjects of upper and lower box container destroy
-		foreach (var holderItem in _targetHolderDragList)
+		foreach (var holderItem in targetHolderDragList)
 		{
 			Destroy(holderItem.gameObject);
 		}
@@ -314,42 +304,20 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		Destroy (_finishDragScript.gameObject);
 		Destroy (_menuButtonDragScript.gameObject);
 		_startDragList.Clear ();
-		_targetHolderDragList.Clear();
+		targetHolderDragList.Clear();
 		_letterList.Clear ();
 		_startHolderDragList.Clear ();
-		_trueLetters.Clear ();
+		trueLetters.Clear ();
 	}
 
-//    public void TmpPlaceLetterInStart(LetterTextScript letterToStore)
-//    {
-//        var firstFreeStartHolder = (from letter in _startHolderDragList where !letter.IsTaken select letter).FirstOrDefault();
-//        firstFreeStartHolder.PlaceButton(letterToStore);
-//    }
-
-//    public void CreateTextFile()
-//    {
-//        string filePath = Application.persistentDataPath + "/bene.csv";
-//        StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
-//        string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum";
-//        writer.WriteLine(firstLine);
-//        writer.Close();
-//    }
 
 	public void writeToText(string upperWord)
 	{
-        //filename von start scene holen, mit date dort versehen
-        //date_name_version.csv ODER
-        //name_date_version.csv
-
         WordItem currentWordItem = Words[wordItemCount];
 		string currentWord = currentWordItem.Word;
-	    string currentTime = DateTime.Now.ToString("yyyy_MM_dd hh:mm");
-
-
-        string filePath = Application.persistentDataPath + "/" + childName + "Drag" + miscInput + ".csv";
-		string wordWithTime = currentWord + ";" + upperWord + ";" + currentTime;
-		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
-		writer.WriteLine(wordWithTime);
+		string writeToLine = currentWord + ";" + upperWord;
+		StreamWriter writer = new StreamWriter(filepath, true, Encoding.UTF8);
+		writer.WriteLine(writeToLine);
 		writer.Close();
 	}
 
@@ -365,12 +333,11 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public void Finish()
 	{
 		//Push correct buttons to top
-		foreach (var letters in _trueLetters) 
+		foreach (var letters in trueLetters) 
 		{
-			var firstFreeTargetButton = _targetHolderDragList.FirstOrDefault(letter => !letter.IsTaken);
+			var firstFreeTargetButton = targetHolderDragList.FirstOrDefault(letter => !letter.IsTaken);
 			firstFreeTargetButton.PlaceButton(letters);
 			checkButtonScript.SetInteractable (true);
-			//_releaseButtonScript.SetInteractableRelease (true);
 		}
 	}
 

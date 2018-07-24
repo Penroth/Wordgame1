@@ -64,34 +64,16 @@ public class SlotScript : MonoBehaviour, IDropHandler
 
         //call task controller to enable chk btn with help of lists
         if (TaskControllerDragScript.Instance.targetDragList.Count ==
-            TaskControllerDragScript.Instance.targetDragList.Capacity &&
+            TaskControllerDragScript.Instance.targetHolderDragList.Count &&
             TaskControllerDragScript.Instance.targetDragList.Count > 0)
         {
+
             TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(true);
         }
         else
         {
             TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(false);
         }
-//		int takenCount = 0;
-//		foreach (var letter in TaskControllerDragScript.Instance._targetHolderDragList) 
-//		{
-//			if (letter.IsTaken) {
-//				takenCount++;
-//			} 
-//			else 
-//			{
-//				takenCount--;
-//			}
-//		}
-//		if (takenCount == TaskControllerDragScript.Instance.targetDragList.Capacity) {
-//			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable (true);
-//		} 
-//		else 
-//		{
-//			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable (false);
-//		}
-//
     }
 
     #endregion

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -46,11 +47,13 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 	private InputFieldScript _inputScript;
 
 
-	public static string nameInput = "";
+	public string nameInput = "";
 	public int ageInput = 0;
-	public static string miscInput = "";
+	public string miscInput = "";
 	public string handed = "Rechsthänder";
 	public string gender = "Männlich";
+	public static string filepath = "";
+
 
 
 	// Use this for initialization
@@ -96,7 +99,7 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 
 	public void checkIfNothingIsEmpty()
 	{
-		if (nameInput != "" && miscInput != "" && ageInput != 0) 
+		if (nameInput != "" && ageInput != 0) 
 		{
 			_clickButtonScript.SetInteractable (true);
 			_dragButtonScript.SetInteractable (true);
@@ -126,9 +129,10 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 
 	public void CreateFile (string clickOrDrag)
 	{
-		string filePath = Application.persistentDataPath + "/"+ nameInput + clickOrDrag + miscInput + ".csv";
-		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
-		string firstLine = "Korrektes Wort; Eingegebenes Wort; Datum" + "; " + "Alter: " + ageInput.ToString () + "; " + handed + "; " + gender;
+		string currentTime = DateTime.Now.ToString("yyyy_MM_dd hh_mm");
+		filepath = Application.persistentDataPath + "/"+ currentTime + "_" + nameInput + "_" + clickOrDrag + ".csv";
+		StreamWriter writer = new StreamWriter(filepath, true, Encoding.UTF8);
+		string firstLine = "Korrektes Wort; Eingegebenes Wort; Zurück Anzahl;" + "Alter: " + ageInput.ToString () + ";" + handed + ";" + gender + ";" + miscInput;
 		writer.WriteLine(firstLine);
 		writer.Close();
 	}

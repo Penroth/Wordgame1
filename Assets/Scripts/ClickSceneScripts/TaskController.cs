@@ -93,24 +93,19 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
     }
 
-
-	//for choosing a WordItem
-	public int wordItemCount = 0;
-
-	public string childName 
-	{
-		get 
-		{
-			return (TaskControllerStartScene.nameInput);
-		}
-	}
-	public string miscInput 
+	public string filepath 
 	{ 
 		get 
 		{ 
-			return (TaskControllerStartScene.miscInput); 
+			return (TaskControllerStartScene.filepath); 
 		} 
 	}
+
+
+	//for choosing a WordItem
+	public int wordItemCount = 0;
+	//counter for back button
+	public int backCounter = 0;
 
     void Start()
     {
@@ -221,9 +216,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
 
         #endregion
-
-		Debug.Log (childName + " " + miscInput);
-
     }
 
 
@@ -269,6 +261,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	public void ReleaseButtonClick ()
 	{
+		backCounter++;
+		_checkButtonScript.SetInteractable (false);
         //get last object of _targetholderlist
         var lastTakenHolder = _targetHolderList.LastOrDefault(holder => holder.IsTaken);
 	    var buttonToPlaceInStart = lastTakenHolder.TakenLetter;
@@ -396,6 +390,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 		else
 		{
+			backCounter = 0;
 			PrepareScene();
 		}
 
@@ -406,12 +401,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	{
 		WordItem currentWordItem = Words[wordItemCount];
 		string currentWord = currentWordItem.Word;
-		string currentTime = System.DateTime.Now.ToString();
-
-		string filePath = Application.persistentDataPath + "/"+ childName + "Click" + miscInput + ".csv";
-		string wordWithTime = currentWord + "; " + upperWord + "; " + currentTime;
-		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
-		writer.WriteLine(wordWithTime);
+		string writeToLine = currentWord + ";" + upperWord + ";" + backCounter;
+		StreamWriter writer = new StreamWriter(filepath, true, Encoding.UTF8);
+		writer.WriteLine(writeToLine);
 		writer.Close();
 
 	}

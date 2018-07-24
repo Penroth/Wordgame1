@@ -8,7 +8,7 @@ public class InputFieldScript : MonoBehaviour {
 
 	public void GetInputName(string name)
 	{
-		TaskControllerStartScene.nameInput = name;
+		TaskControllerStartScene.Instance.nameInput = name;
 		Debug.Log (name);
 	}
 		
@@ -21,7 +21,7 @@ public class InputFieldScript : MonoBehaviour {
 
 	public void GetInputMisc(string misc)
 	{
-		TaskControllerStartScene.miscInput = misc;
+		TaskControllerStartScene.Instance.miscInput = misc;
 		Debug.Log (misc);
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MenuButtonClickScript : MonoBehaviour {
 
-	public void OnMenuButtonDrag()
+	public void OnMenuButtonClick()
 	{
 		TaskController.Instance.BackToMenu ();
 	}
