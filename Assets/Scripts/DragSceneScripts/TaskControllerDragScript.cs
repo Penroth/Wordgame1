@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System.IO;
 using System.Text;
+using Random = UnityEngine.Random;
 
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>
 {
@@ -335,12 +337,17 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	public void writeToText(string upperWord)
 	{
-		WordItem currentWordItem = Words[wordItemCount];
-		string currentWord = currentWordItem.Word;
-	    string currentTime = System.DateTime.Now.ToString();
+        //filename von start scene holen, mit date dort versehen
+        //date_name_version.csv ODER
+        //name_date_version.csv
 
-		string filePath = Application.persistentDataPath + "/"+ childName + "Drag" + miscInput + ".csv";
-		string wordWithTime = currentWord + "; " + upperWord + "; " + currentTime;
+        WordItem currentWordItem = Words[wordItemCount];
+		string currentWord = currentWordItem.Word;
+	    string currentTime = DateTime.Now.ToString("yyyy_MM_dd hh:mm");
+
+
+        string filePath = Application.persistentDataPath + "/" + childName + "Drag" + miscInput + ".csv";
+		string wordWithTime = currentWord + ";" + upperWord + ";" + currentTime;
 		StreamWriter writer = new StreamWriter(filePath, true, Encoding.UTF8);
 		writer.WriteLine(wordWithTime);
 		writer.Close();

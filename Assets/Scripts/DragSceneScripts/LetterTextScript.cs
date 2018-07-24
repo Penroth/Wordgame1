@@ -35,7 +35,17 @@ public class LetterTextScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public void OnDrag(PointerEventData eventData)
     {
-        transform.position = Input.mousePosition;
+        //debuggen, ansonsten neu googlen
+
+        if (Input.touchCount < 1)
+        {
+            transform.position = Input.mousePosition;
+        }
+        else
+        {
+            transform.position = Input.GetTouch(0).position;
+        }
+        
     }
 
     #endregion
