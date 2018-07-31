@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -8,6 +9,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System.IO;
 using System.Text;
+using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>
@@ -16,6 +18,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	// hintergrund für buchstaben
 
 
+    public GameObject MenuPopup;
 	//Start Box 
 	public GameObject LowerBox;
     //Target Box 
@@ -57,6 +60,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	//list for true letters for finish function (testing purpose)
 	public List <LetterTextScript> trueLetters = new List <LetterTextScript>();
 
+    public static Stopwatch SW = new Stopwatch();
+
 
 	public CheckButtonDragScript checkButtonScript;
 	private FinishDragScript _finishDragScript;
@@ -96,14 +101,26 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public int wordItemCount = 0;
 
 
-	// Use this for initialization
-	void Start ()
+    public void OpenPopup()
+    {
+        MenuPopup.SetActive(true);
+    }
+    public void ClosePopup()
+    {
+        MenuPopup.SetActive(false);
+    }
+
+    // Use this for initialization
+    void Start ()
 	{
         PrepareDragScene ();
 	}
 
 	public void PrepareDragScene()
 	{
+        SW.Stop();
+        SW.Reset();
+
 		//use current Task of TaskItemList
 		WordItem currentWord = Words[wordItemCount];
 
@@ -197,6 +214,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			//add an entry in the upperbox list
 			targetHolderDragList.Add(targetDrag);
 		}
+
+        //start Stopwatch
+        SW.Start();
 	}
 
 	public void Check(CheckButtonDragScript button)
@@ -212,20 +232,21 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			var upperChar = upperLetter.GetComponentInChildren<Text>().text;
 			upperWord = upperWord + upperChar;
 		}
-		writeToText (upperWord);
 
 		if (currentWord.Equals(upperWord) ) {
 			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol
 			StartCoroutine(ShowPositiveDragFeedback());
 
-
+            
 
 		} else {
 			//show wrong symbol
 			StartCoroutine(ShowNegativeFeedbackDrag());
-		}
-	}
+	    }
+
+	    writeToText(upperWord);
+    }
 
 	public IEnumerator ShowNegativeFeedbackDrag()
 	{
@@ -313,6 +334,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
 	public void writeToText(string upperWord)
 	{
+	    var rt = SW.ElapsedMilliseconds;
+
         WordItem currentWordItem = Words[wordItemCount];
 		string currentWord = currentWordItem.Word;
 		string writeToLine = currentWord + ";" + upperWord;

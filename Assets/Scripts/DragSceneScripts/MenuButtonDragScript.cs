@@ -6,6 +6,6 @@ public class MenuButtonDragScript : MonoBehaviour {
 
 	public void OnMenuButtonClick()
 	{
-		TaskControllerDragScript.Instance.BackToMenu ();
+		TaskControllerDragScript.Instance.OpenPopup();
 	}
 }
