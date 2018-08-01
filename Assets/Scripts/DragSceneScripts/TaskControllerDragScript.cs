@@ -380,10 +380,39 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	{
 		WordItem currentWordItem = Words[wordItemCount];
 		string currentWordName = currentWordItem.name;
+		StartCoroutine(PlayAudio (currentWordName));
+	}
+
+	public IEnumerator PlayAudio(string currentWordName)
+	{
+		//step 1, deactivate all buttons
+		_menuButtonDragScript.SetInteractable (false);
+		_listenScript.SetInteractable (false);
+		checkButtonScript.SetInteractable (false);
+		BlockAllLetterRaycasts(true);
+
 		ClipSource.GetComponent<AudioSource> ();
-		var currentAudioClip = Resources.Load<AudioClip>("Audio/" + currentWordName + "/" + currentWordName + "_1");
-		ClipSource.clip = currentAudioClip;
+		var currentWordAudio = Resources.Load<AudioClip>("Audioclips/" + currentWordName);
+		var currentSentenceAudio = Resources.Load<AudioClip> ("Audioclips/" + currentWordName + "_satz");
+		var clipWordLength = currentWordAudio.length;
+		var clipSentenceLength = currentSentenceAudio.length;
+		ClipSource.clip = currentWordAudio;
 		ClipSource.Play ();
+		yield return new WaitForSeconds(clipWordLength);
+		yield return new WaitForSeconds(1f);
+		ClipSource.clip = currentSentenceAudio;
+		ClipSource.Play ();
+		yield return new WaitForSeconds(clipSentenceLength);
+		yield return new WaitForSeconds(1f);
+		ClipSource.clip = currentWordAudio;
+		ClipSource.Play ();
+		yield return new WaitForSeconds(clipWordLength);
+		yield return new WaitForSeconds(1f);
+		//last step activate all buttons again
+		_menuButtonDragScript.SetInteractable (true);
+		_listenScript.SetInteractable (true);
+		checkButtonScript.SetInteractable (true);
+		BlockAllLetterRaycasts(false);
 	}
 
 	public void OpenPopup()

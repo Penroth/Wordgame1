@@ -371,6 +371,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		_releaseButtonScript.SetInteractableRelease (false);
 		_menuButtonScript.SetInteractable (false);
 		_listenScript.SetInteractable (false);
+		_letterList.ForEach(letter => letter.SetInteractable(false));
         //step 1
         //instanziiere bild mit rotem X in der mitte vom screen
 		var wrongMark = Instantiate(redX, RedMarkBox.transform) as GameObject;
@@ -383,6 +384,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		_checkButtonScript.SetInteractable(true);
 		_releaseButtonScript.SetInteractableRelease(true);
 		_listenScript.SetInteractable (true);
+		_letterList.ForEach(letter => letter.SetInteractable(true));
 
     }
 	public IEnumerator ShowPositiveFeedback()
@@ -393,6 +395,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		_checkButtonScript.SetInteractable(false);
 		_releaseButtonScript.SetInteractableRelease (false);
 		_listenScript.SetInteractable (false);
+		_menuButtonScript.SetInteractable (false);
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var rightMark = Instantiate(greenCheck, greenMarkBox.transform) as GameObject;
@@ -447,10 +450,51 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	{
 		WordItem currentWordItem = Words[wordItemCount];
 		string currentWordName = currentWordItem.name;
+		StartCoroutine(PlayAudio(currentWordName));
+	}
+
+	public IEnumerator PlayAudio(string currentWordName)
+	{
+		//step 1, deactivate all buttons
+		_menuButtonScript.SetInteractable (false);
+		_listenScript.SetInteractable (false);
+		_checkButtonScript.SetInteractable (false);
+		_releaseButtonScript.SetInteractableRelease (false);
+		_letterList.ForEach(letter => letter.SetInteractable(false));
+
+		//step 2 get the audiofiles
 		ClipSource.GetComponent<AudioSource> ();
-		var currentAudioClip = Resources.Load<AudioClip>("Audio/" + currentWordName + "/" + currentWordName + "_1");
-		ClipSource.clip = currentAudioClip;
+		var currentWordAudio = Resources.Load<AudioClip>("Audioclips/" + currentWordName);
+		var currentSentenceAudio = Resources.Load<AudioClip> ("Audioclips/" + currentWordName + "_satz");
+
+		//get the length of the audiofiles
+		var clipWordLength = currentWordAudio.length;
+		var clipSentenceLength = currentSentenceAudio.length;
+
+		//play the word file
+		ClipSource.clip = currentWordAudio;
 		ClipSource.Play ();
+		//wait for the file to be finished
+		yield return new WaitForSeconds(clipWordLength);
+		yield return new WaitForSeconds(1f);
+		//play the sentence file
+		ClipSource.clip = currentSentenceAudio;
+		ClipSource.Play ();
+		//wait for the file to be finished
+		yield return new WaitForSeconds(clipSentenceLength);
+		yield return new WaitForSeconds(1f);
+		//play the word again
+		ClipSource.clip = currentWordAudio;
+		ClipSource.Play ();
+		//wait
+		yield return new WaitForSeconds(clipWordLength);
+		yield return new WaitForSeconds(1f);
+		//last step activate all buttons again
+		_menuButtonScript.SetInteractable (true);
+		_listenScript.SetInteractable (true);
+		_checkButtonScript.SetInteractable (true);
+		_releaseButtonScript.SetInteractableRelease (true);
+		_letterList.ForEach(letter => letter.SetInteractable(true));
 	}
 
 	public void OpenPopup()
