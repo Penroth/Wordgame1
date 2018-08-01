@@ -6,10 +6,15 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.IO;
 using System.Text;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 
 public class TaskController : MonoBehaviourSingleton<TaskController>
 {
+
+	public GameObject MenuPopup;
 	//lower box
     public GameObject StartBox;
 	//button
@@ -36,10 +41,10 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 	public GameObject ReleaseButtonBox;
 	//release button
 	public GameObject ReleaseButtonPrefab;
-	//finish button box for testing purposes
-	public GameObject FinishBox;
-	//finish button for testing
-	public GameObject FinishButton;
+	//listen button box for testing purposes
+	public GameObject ListenBox;
+	//listen button for testing
+	public GameObject ListenButton;
 	//menu button box
 	public GameObject MenuButtonBox;
 	//menu button
@@ -47,8 +52,12 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	private CheckButtonScript _checkButtonScript;
 	private ReleaseButtonScript _releaseButtonScript;
-	private FinishClickScript _finishClickScript;
+	//private FinishClickScript _finishClickScript;
 	private MenuButtonClickScript _menuButtonScript;
+	private ListenClickScript _listenScript;
+
+	//for displaying audio
+	public AudioSource ClipSource;
 
 
 	//create list for upperletterbox
@@ -101,6 +110,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		} 
 	}
 
+	public static Stopwatch SW = new Stopwatch();
 
 	//for choosing a WordItem
 	public int wordItemCount = 0;
@@ -116,10 +126,10 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
     // Use this for initialization
     public void PrepareScene()
     {
+		SW.Stop();
+		SW.Reset();
         #region Inizialisierung der StartBox
 
-        
-        Debug.Log("start");
 
 
 		WordItem useWord = Words[wordItemCount];
@@ -136,12 +146,18 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         _releaseButtonScript.SetInteractableRelease(false);
 
 		//instantiate finish button 
-		var finishButtonGo = Instantiate(FinishButton, FinishBox.transform);
-		_finishClickScript = finishButtonGo.GetComponent<FinishClickScript>();
+		//var finishButtonGo = Instantiate(FinishButton, FinishBox.transform);
+		//_finishClickScript = finishButtonGo.GetComponent<FinishClickScript>();
+
+		//instantiate listen button
+		var listenButtonGo = Instantiate(ListenButton, ListenBox.transform);
+		_listenScript = listenButtonGo.GetComponent<ListenClickScript>();
+		_listenScript.SetInteractable(true);
 
 		//instantiate menu button
 		var menuButtonGo = Instantiate(MenuButton, MenuButtonBox.transform);
 		_menuButtonScript = menuButtonGo.GetComponent<MenuButtonClickScript>();
+		_menuButtonScript.SetInteractable(true);
 
 
         //instantiate distractor buttons and add them to the lowerboxlist
@@ -184,7 +200,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 			//add letter to letterlist
             _letterList.Add(letterGo.GetComponent<LetterButtonScript>());
 			//fill list with only true letters for finish function
-			_trueLetters.Add(letterGo.GetComponent<LetterButtonScript>());
+			//_trueLetters.Add(letterGo.GetComponent<LetterButtonScript>());
 			//set buttonposition to occupied in lower box
             holderGo.GetComponent<LetterHolderScript>().IsTaken = true;
 			//? ## same as above, but with the correctButtonLetter
@@ -216,6 +232,9 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         }
 
         #endregion
+
+		Listen ();
+		SW.Start();
     }
 
 
@@ -306,7 +325,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
             
 		} else {
-			Debug.Log (upperWord);
             //show wrong symbol
 		    StartCoroutine(ShowNegativeFeedback());
 		}
@@ -335,7 +353,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		}
 		Destroy (_checkButtonScript.gameObject);
 		Destroy (_releaseButtonScript.gameObject);
-		Destroy (_finishClickScript.gameObject);
+		//Destroy (_finishClickScript.gameObject);
+		Destroy (_listenScript.gameObject);
 		Destroy (_menuButtonScript.gameObject);
 		_trueLetters.Clear ();
 		_startButtonList.Clear ();
@@ -350,6 +369,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//set check and release to not interactable
 		_checkButtonScript.SetInteractable(false);
 		_releaseButtonScript.SetInteractableRelease (false);
+		_menuButtonScript.SetInteractable (false);
+		_listenScript.SetInteractable (false);
         //step 1
         //instanziiere bild mit rotem X in der mitte vom screen
 		var wrongMark = Instantiate(redX, RedMarkBox.transform) as GameObject;
@@ -361,6 +382,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//set check and release interactable again
 		_checkButtonScript.SetInteractable(true);
 		_releaseButtonScript.SetInteractableRelease(true);
+		_listenScript.SetInteractable (true);
 
     }
 	public IEnumerator ShowPositiveFeedback()
@@ -370,6 +392,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//set check and release to not interactable
 		_checkButtonScript.SetInteractable(false);
 		_releaseButtonScript.SetInteractableRelease (false);
+		_listenScript.SetInteractable (false);
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var rightMark = Instantiate(greenCheck, greenMarkBox.transform) as GameObject;
@@ -399,46 +422,49 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	public void writeToText(string upperWord)
 	{
+		var rt = SW.ElapsedMilliseconds;
+
 		WordItem currentWordItem = Words[wordItemCount];
 		string currentWord = currentWordItem.Word;
-		string writeToLine = currentWord + ";" + upperWord + ";" + backCounter;
+		string writeToLine = currentWord + ";" + upperWord + ";" + rt + ";" + backCounter;
 		StreamWriter writer = new StreamWriter(filepath, true, Encoding.UTF8);
 		writer.WriteLine(writeToLine);
 		writer.Close();
 
 	}
 
-	public void Finish()
+//	public void Finish()
+//	{
+//		//Push correct buttons to top
+//		foreach (var letters in _trueLetters) 
+//		{
+//			var firstFreeTargetButton = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
+//			firstFreeTargetButton.PlaceButton(letters);
+//			_checkButtonScript.SetInteractable (true);
+//		}
+//	}
+	public void Listen()
 	{
-		//Push correct buttons to top
-		foreach (var letters in _trueLetters) 
-		{
-			var firstFreeTargetButton = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
-			firstFreeTargetButton.PlaceButton(letters);
-			_checkButtonScript.SetInteractable (true);
-			//_releaseButtonScript.SetInteractableRelease (true);
-		}
+		WordItem currentWordItem = Words[wordItemCount];
+		string currentWordName = currentWordItem.name;
+		ClipSource.GetComponent<AudioSource> ();
+		var currentAudioClip = Resources.Load<AudioClip>("Audio/" + currentWordName + "/" + currentWordName + "_1");
+		ClipSource.clip = currentAudioClip;
+		ClipSource.Play ();
+	}
+
+	public void OpenPopup()
+	{
+		MenuPopup.SetActive(true);
+	}
+	public void ClosePopup()
+	{
+		MenuPopup.SetActive(false);
 	}
 
 	public void BackToMenu()
 	{
 		SceneManager.LoadScene ("StartScene");
 	}
-
-
-    /*
-     *Startscreen mit Auswahl drag and drop oder click
-     * Endscreen
-     * Ergebnisse abspeichern
-     * 3) kinder suchen
-     *  
-     * next steps:
-     * button lösch funktion (button unten links dafür), verknüpfen mit release funktion im holder script
-     * ein WordItem pro Durchlauf, feste Reihenfolge für Worditems 
-     * Wenn liste durchlaufen, switch in celebration scene
-     * Startscreen, Endscreen (Celebration, scene03)
-     * Einblendung für Kinder bei richtigem oder falschem Wort
-     * 
-     * Drag n Drop oder Click Version auswählbar im Startscreen
-     */
+		
 }

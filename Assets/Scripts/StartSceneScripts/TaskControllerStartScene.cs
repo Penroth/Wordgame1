@@ -25,18 +25,18 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 	public GameObject GenderBox;
 	//Gender Dropdown
 	public Dropdown GenderPrefab;
-	//name input field box
-	public GameObject NameBox;
-	//name input field
-	public GameObject NameField;
+	//ID input field box
+	public GameObject IDBox;
+	//ID input field
+	public GameObject IDField;
 	//Age Input Box
 	public GameObject AgeBox;
 	//Age input field
 	public GameObject AgeField;
-	//Misc input Box
-	public GameObject MiscBox;
-	//misc input field
-	public GameObject MiscField;
+	//Class input Box
+	public GameObject ClassBox;
+	//class input field
+	public GameObject ClassField;
 
 
 
@@ -47,13 +47,12 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 	private InputFieldScript _inputScript;
 
 
-	public string nameInput = "";
+	public string IDInput = "";
 	public int ageInput = 0;
-	public string miscInput = "";
+	public int classInput = 0;
 	public string handed = "Rechsthänder";
 	public string gender = "Männlich";
 	public static string filepath = "";
-
 
 
 	// Use this for initialization
@@ -68,6 +67,13 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 
 	public void PrepareStartScene()
 	{
+		var IDFromScript = IDScript.ID;
+		var ageFromScript = IDScript.age;
+		var classFromScript = IDScript.classLevel;
+
+
+
+
 		var ClickButtonGo = Instantiate (ClickButtonPrefab, ClickBox.transform);
 		_clickButtonScript = ClickButtonGo.GetComponent<ClickButtonScript> ();
 		_clickButtonScript.SetInteractable (false);
@@ -82,24 +88,38 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 		var HandedGo = Instantiate (HandedPrefab, HandedBox.transform);
 		_handedScript = HandedGo.GetComponent<HandedScript> ();
 
-		var NameGo = Instantiate (NameField, NameBox.transform);
-		_inputScript = NameGo.GetComponent<InputFieldScript> ();;
+		var IDGo = Instantiate (IDField, IDBox.transform);
+		_inputScript = IDGo.GetComponent<InputFieldScript> ();
+
+		if (IDFromScript != "") 
+		{
+			IDInput = IDFromScript;
+			_inputScript.GetComponent<InputField> ().text = IDInput;
+		}
 
 		var AgeGo = Instantiate (AgeField, AgeBox.transform);
-		_inputScript = AgeGo.GetComponent<InputFieldScript> ();;
+		_inputScript = AgeGo.GetComponent<InputFieldScript> ();
+		if (ageFromScript != 0) 
+		{
+			ageInput = ageFromScript;
+			_inputScript.GetComponent<InputField> ().text = ageInput.ToString();
+		}
 
-		var MiscGo = Instantiate (MiscField, MiscBox.transform);
-		_inputScript = MiscGo.GetComponent<InputFieldScript> ();
+		var ClassGo = Instantiate (ClassField, ClassBox.transform);
+		_inputScript = ClassGo.GetComponent<InputFieldScript> ();
+		if (classFromScript != 0) 
+		{
+			classInput = classFromScript;
+			_inputScript.GetComponent<InputField>().text = classInput.ToString();
+		}
 
 		Debug.Log (handed + "in preparescene");
 		Debug.Log (gender + "gender in preparescene");
-
-	
 	}
 
 	public void checkIfNothingIsEmpty()
 	{
-		if (nameInput != "" && ageInput != 0) 
+		if (IDInput != "" && ageInput != 0 && classInput != 0) 
 		{
 			_clickButtonScript.SetInteractable (true);
 			_dragButtonScript.SetInteractable (true);
@@ -109,10 +129,6 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 	public void HandedSwitch()
 	{
 		string hand = _handedScript.GetComponent<Dropdown> ().captionText.text.ToString ();
-//		_handedScript.GetComponent<Dropdown> ().onValueChanged.AddListener (delegate {
-//			_handedScript.GetComponent<Dropdown> ().captionText.ToString ();
-//		});
-		//hand = _handedScript.GetComponent<Dropdown> ().captionText.ToString ();
 		Debug.Log(hand);
 		handed = hand;
 		Debug.Log(handed + " welche Hand");
@@ -130,15 +146,18 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 	public void CreateFile (string clickOrDrag)
 	{
 		string currentTime = DateTime.Now.ToString("yyyy_MM_dd hh_mm");
-		filepath = Application.persistentDataPath + "/"+ currentTime + "_" + nameInput + "_" + clickOrDrag + ".csv";
+		filepath = Application.persistentDataPath + "/"+ currentTime + "_" + IDInput + "_" + clickOrDrag + ".csv";
 		StreamWriter writer = new StreamWriter(filepath, true, Encoding.UTF8);
-		string firstLine = "Korrektes Wort; Eingegebenes Wort; Zurück Anzahl;" + "Alter: " + ageInput.ToString () + ";" + handed + ";" + gender + ";" + miscInput;
+		string firstLine = "Korrektes Wort; Eingegebenes Wort; Timer; Zurück Anzahl;" + "Alter: " + ageInput.ToString () + ";" + handed + ";" + gender + ";" + "Klassenstufe: " + classInput.ToString ();
 		writer.WriteLine(firstLine);
 		writer.Close();
 	}
 
 	public void ClickOnClick()
 	{
+		IDScript.age = ageInput;
+		IDScript.ID = IDInput;
+		IDScript.classLevel = classInput;
 		Debug.Log ("click in task");
 		CreateFile ("Click");
 		SceneManager.LoadScene ("ClickScene");
@@ -146,6 +165,9 @@ public class TaskControllerStartScene : MonoBehaviourSingleton<TaskControllerSta
 
 	public void DragOnClick()
 	{
+		IDScript.age = ageInput;
+		IDScript.ID = IDInput;
+		IDScript.classLevel = classInput;
 		Debug.Log ("drag in task");
 		CreateFile ("Drag");
 		SceneManager.LoadScene ("DragScene");

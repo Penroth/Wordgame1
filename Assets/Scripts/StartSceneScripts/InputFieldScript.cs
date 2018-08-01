@@ -6,10 +6,10 @@ using UnityEngine.UI;
 public class InputFieldScript : MonoBehaviour {
 
 
-	public void GetInputName(string name)
+	public void GetInputName(string ID)
 	{
-		TaskControllerStartScene.Instance.nameInput = name;
-		Debug.Log (name);
+		TaskControllerStartScene.Instance.IDInput = ID;
+		Debug.Log (ID);
 	}
 		
 	public void GetInputAge(string ageString)
@@ -19,9 +19,10 @@ public class InputFieldScript : MonoBehaviour {
 		Debug.Log (age);
 	}
 
-	public void GetInputMisc(string misc)
+	public void GetInputClass(string classLevelString)
 	{
-		TaskControllerStartScene.Instance.miscInput = misc;
-		Debug.Log (misc);
+		int classLevel = int.Parse (classLevelString);
+		TaskControllerStartScene.Instance.classInput = classLevel;
+		Debug.Log (classLevel);
 	}
 }

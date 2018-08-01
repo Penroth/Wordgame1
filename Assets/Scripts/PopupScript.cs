@@ -13,5 +13,15 @@ namespace Assets.Scripts
         {
             TaskControllerDragScript.Instance.ClosePopup();
         }
+
+		public void ButtonClickConfirmClick()
+		{
+			TaskController.Instance.BackToMenu ();
+		}
+
+		public void ButtonClickCancelClick()
+		{
+			TaskController.Instance.ClosePopup ();
+		}
     }
 }

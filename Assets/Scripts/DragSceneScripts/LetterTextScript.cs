@@ -74,6 +74,18 @@ public class LetterTextScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
                 firstFreeStartHolder.PlaceButton(this);
             }
         }
+		//call task controller to enable chk btn with help of lists
+		if (TaskControllerDragScript.Instance.targetDragList.Count ==
+			TaskControllerDragScript.Instance.targetHolderDragList.Count &&
+			TaskControllerDragScript.Instance.targetDragList.Count > 0)
+		{
+
+			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(true);
+		}
+		else
+		{
+			TaskControllerDragScript.Instance.checkButtonScript.SetInteractable(false);
+		}
 
         SlotScript.Swapped = false;
     }

@@ -14,8 +14,7 @@ using Random = UnityEngine.Random;
 
 public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDragScript>
 {
-	//todo: 
-	// hintergrund für buchstaben
+
 
 
     public GameObject MenuPopup;
@@ -43,10 +42,14 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public GameObject RedXBox;
 	//red X for wrong answers
 	public GameObject RedXPrefab;
-	//Finish Button Box for test Purposes
-	public GameObject FinishBox;
-	//Finish Button for test Purposes
-	public GameObject FinishPrefab;
+//	//Finish Button Box for test Purposes
+//	public GameObject FinishBox;
+//	//Finish Button for test Purposes
+//	public GameObject FinishPrefab;
+	//listen box
+	public GameObject ListenBox;
+	//listen Button
+	public GameObject ListenButton;
 	//menu button box
 	public GameObject MenuButtonBox;
 	//menu button
@@ -62,10 +65,13 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
     public static Stopwatch SW = new Stopwatch();
 
+	//for displaying audio
+	public AudioSource ClipSource;
 
 	public CheckButtonDragScript checkButtonScript;
-	private FinishDragScript _finishDragScript;
+	//private FinishDragScript _finishDragScript;
 	private MenuButtonDragScript _menuButtonDragScript;
+	private ListenDragScript _listenScript;
 
 	//pushes letters from startbox to a list
 	private List<LetterTextScript> _startDragList
@@ -101,14 +107,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public int wordItemCount = 0;
 
 
-    public void OpenPopup()
-    {
-        MenuPopup.SetActive(true);
-    }
-    public void ClosePopup()
-    {
-        MenuPopup.SetActive(false);
-    }
+
 
     // Use this for initialization
     void Start ()
@@ -130,12 +129,17 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		checkButtonScript.SetInteractable(false);
 
 		//instantiate finish button
-		var finishButtonGo = Instantiate (FinishPrefab, FinishBox.transform);
-		_finishDragScript = finishButtonGo.GetComponent<FinishDragScript> ();
+//		var finishButtonGo = Instantiate (FinishPrefab, FinishBox.transform);
+//		_finishDragScript = finishButtonGo.GetComponent<FinishDragScript> ();
 
 		//instantiate menu button
 		var menuButtonGo = Instantiate(MenuButton, MenuButtonBox.transform);
 		_menuButtonDragScript = menuButtonGo.GetComponent<MenuButtonDragScript>();
+		_menuButtonDragScript.SetInteractable (true);
+
+		var listenButtonGo = Instantiate(ListenButton, ListenBox.transform);
+		_listenScript = listenButtonGo.GetComponent<ListenDragScript>();
+		_listenScript.SetInteractable(true);
 
 
 
@@ -214,7 +218,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			//add an entry in the upperbox list
 			targetHolderDragList.Add(targetDrag);
 		}
-
+		Listen ();
         //start Stopwatch
         SW.Start();
 	}
@@ -253,6 +257,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//step 0
 		//set check and release to not interactable
 		checkButtonScript.SetInteractable(false);
+		_menuButtonDragScript.SetInteractable (false);
+		_listenScript.SetInteractable (false);
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var wrongMark = Instantiate(RedXPrefab, RedXBox.transform) as GameObject;
@@ -263,6 +269,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//step 4 
 		//set check and release interactable again
 		checkButtonScript.SetInteractable(true);
+		_menuButtonDragScript.SetInteractable (true);
+		_listenScript.SetInteractable (true);
 		//step 5
 		//make buttons dragable again
 		BlockAllLetterRaycasts(false);
@@ -276,6 +284,9 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//step 0 
 		//set check and release to not interactable
 		checkButtonScript.SetInteractable(false);
+		_menuButtonDragScript.SetInteractable (false);
+		_listenScript.SetInteractable (false);
+
 		//step 1
 		//instanziiere bild mit rotem X in der mitte vom screen
 		var rightMark = Instantiate(GreenMarkPrefab, GreenMarkBox.transform) as GameObject;
@@ -322,7 +333,8 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 			Destroy (startHolder.gameObject);
 		}
 		Destroy (checkButtonScript.gameObject);
-		Destroy (_finishDragScript.gameObject);
+		//Destroy (_finishDragScript.gameObject);
+		Destroy (_listenScript.gameObject);
 		Destroy (_menuButtonDragScript.gameObject);
 		_startDragList.Clear ();
 		targetHolderDragList.Clear();
@@ -338,7 +350,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 
         WordItem currentWordItem = Words[wordItemCount];
 		string currentWord = currentWordItem.Word;
-		string writeToLine = currentWord + ";" + upperWord;
+		string writeToLine = currentWord + ";" + upperWord + ";" + rt;
 		StreamWriter writer = new StreamWriter(filepath, true, Encoding.UTF8);
 		writer.WriteLine(writeToLine);
 		writer.Close();
@@ -353,15 +365,34 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
         }
     }
 
-	public void Finish()
+//	public void Finish()
+//	{
+//		//Push correct buttons to top
+//		foreach (var letters in trueLetters) 
+//		{
+//			var firstFreeTargetButton = targetHolderDragList.FirstOrDefault(letter => !letter.IsTaken);
+//			firstFreeTargetButton.PlaceButton(letters);
+//			checkButtonScript.SetInteractable (true);
+//		}
+//	}
+
+	public void Listen()
 	{
-		//Push correct buttons to top
-		foreach (var letters in trueLetters) 
-		{
-			var firstFreeTargetButton = targetHolderDragList.FirstOrDefault(letter => !letter.IsTaken);
-			firstFreeTargetButton.PlaceButton(letters);
-			checkButtonScript.SetInteractable (true);
-		}
+		WordItem currentWordItem = Words[wordItemCount];
+		string currentWordName = currentWordItem.name;
+		ClipSource.GetComponent<AudioSource> ();
+		var currentAudioClip = Resources.Load<AudioClip>("Audio/" + currentWordName + "/" + currentWordName + "_1");
+		ClipSource.clip = currentAudioClip;
+		ClipSource.Play ();
+	}
+
+	public void OpenPopup()
+	{
+		MenuPopup.SetActive(true);
+	}
+	public void ClosePopup()
+	{
+		MenuPopup.SetActive(false);
 	}
 
 	public void BackToMenu()

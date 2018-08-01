@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class FinishClickScript : MonoBehaviour {
 
-	public void FinishClick()
-	{
-		TaskController.Instance.Finish ();
-	}
+//	public void FinishClick()
+//	{
+//		TaskController.Instance.Finish ();
+//	}
 }
