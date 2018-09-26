@@ -42,10 +42,6 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 	public GameObject RedXBox;
 	//red X for wrong answers
 	public GameObject RedXPrefab;
-//	//Finish Button Box for test Purposes
-//	public GameObject FinishBox;
-//	//Finish Button for test Purposes
-//	public GameObject FinishPrefab;
 	//listen box
 	public GameObject ListenBox;
 	//listen Button
@@ -127,10 +123,6 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		var checkButtonDrag = Instantiate(CheckButtonPrefab, CheckBox.transform) as GameObject;
 		checkButtonScript = checkButtonDrag.GetComponent<CheckButtonDragScript>();
 		checkButtonScript.SetInteractable(false);
-
-		//instantiate finish button
-//		var finishButtonGo = Instantiate (FinishPrefab, FinishBox.transform);
-//		_finishDragScript = finishButtonGo.GetComponent<FinishDragScript> ();
 
 		//instantiate menu button
 		var menuButtonGo = Instantiate(MenuButton, MenuButtonBox.transform);
@@ -238,7 +230,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		}
 
 		if (currentWord.Equals(upperWord) ) {
-			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
+			// start coroutine bei der erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
 			//show right symvol
 			StartCoroutine(ShowPositiveDragFeedback());
 
@@ -364,18 +356,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
             letter.GetComponent<CanvasGroup>().blocksRaycasts = !b;
         }
     }
-
-//	public void Finish()
-//	{
-//		//Push correct buttons to top
-//		foreach (var letters in trueLetters) 
-//		{
-//			var firstFreeTargetButton = targetHolderDragList.FirstOrDefault(letter => !letter.IsTaken);
-//			firstFreeTargetButton.PlaceButton(letters);
-//			checkButtonScript.SetInteractable (true);
-//		}
-//	}
-
+	
 	public void Listen()
 	{
 		WordItem currentWordItem = Words[wordItemCount];
@@ -411,7 +392,7 @@ public class TaskControllerDragScript : MonoBehaviourSingleton<TaskControllerDra
 		//last step activate all buttons again
 		_menuButtonDragScript.SetInteractable (true);
 		_listenScript.SetInteractable (true);
-		checkButtonScript.SetInteractable (true);
+		//checkButtonScript.SetInteractable (true);
 		BlockAllLetterRaycasts(false);
 	}
 

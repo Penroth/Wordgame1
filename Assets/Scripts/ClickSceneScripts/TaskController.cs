@@ -145,10 +145,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         _releaseButtonScript = releaseButtonGo.GetComponent<ReleaseButtonScript>();
         _releaseButtonScript.SetInteractableRelease(false);
 
-		//instantiate finish button 
-		//var finishButtonGo = Instantiate(FinishButton, FinishBox.transform);
-		//_finishClickScript = finishButtonGo.GetComponent<FinishClickScript>();
-
 		//instantiate listen button
 		var listenButtonGo = Instantiate(ListenButton, ListenBox.transform);
 		_listenScript = listenButtonGo.GetComponent<ListenClickScript>();
@@ -199,8 +195,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
             letterScript.IsDistractor = false;
 			//add letter to letterlist
             _letterList.Add(letterGo.GetComponent<LetterButtonScript>());
-			//fill list with only true letters for finish function
-			//_trueLetters.Add(letterGo.GetComponent<LetterButtonScript>());
 			//set buttonposition to occupied in lower box
             holderGo.GetComponent<LetterHolderScript>().IsTaken = true;
 			//? ## same as above, but with the correctButtonLetter
@@ -246,7 +240,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
         //if the clicked button is in the lower box 
         if (currentLetterButton.LowerBox)
         {
-            // ##you have to check if there is a not taken gameobject at all, otherwise it will return a nullpointer error if there are no free button holders.
             //check to see if there are any free button holder; does this list has any item which is not taken?
             if (_targetHolderList.Any(holder => !holder.IsTaken))
             {
@@ -318,8 +311,8 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		writeToText (upperWord);
 		if (currentWord.Equals(upperWord) ) {
 			//switch scene if list is empty, counter is out of bounds
-			// start coroutine wo erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
-			//show right symvol
+			// start coroutine in der erst feedback anbgegeben wird, dann feedback gelöscht wird, dann scene cleanup, + scene switch
+			//show right symbol
 			StartCoroutine(ShowPositiveFeedback());
 
 
@@ -436,16 +429,6 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 
 	}
 
-//	public void Finish()
-//	{
-//		//Push correct buttons to top
-//		foreach (var letters in _trueLetters) 
-//		{
-//			var firstFreeTargetButton = _targetHolderList.FirstOrDefault(letter => !letter.IsTaken);
-//			firstFreeTargetButton.PlaceButton(letters);
-//			_checkButtonScript.SetInteractable (true);
-//		}
-//	}
 	public void Listen()
 	{
 		WordItem currentWordItem = Words[wordItemCount];
@@ -492,7 +475,7 @@ public class TaskController : MonoBehaviourSingleton<TaskController>
 		//last step activate all buttons again
 		_menuButtonScript.SetInteractable (true);
 		_listenScript.SetInteractable (true);
-		_checkButtonScript.SetInteractable (true);
+		//_checkButtonScript.SetInteractable (true);
 		_releaseButtonScript.SetInteractableRelease (true);
 		_letterList.ForEach(letter => letter.SetInteractable(true));
 	}
